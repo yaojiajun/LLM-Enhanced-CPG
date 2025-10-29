@@ -1,1 +1,0 @@
-Focus on refining penalty functions, balancing weights and randomness effectively, and introducing strategic modifications (e.g., squared distances, dynamic balancing) for improved heuristic efficacy in Unified VRP optimization.

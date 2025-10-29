@@ -1,1 +1,0 @@
-Enhance heuristic randomness and adaptability, incorporate domain-specific knowledge, leverage input-based transformations, balance exploration-exploitation, and utilize efficient tensor operations for improved Unified VRP solutions.

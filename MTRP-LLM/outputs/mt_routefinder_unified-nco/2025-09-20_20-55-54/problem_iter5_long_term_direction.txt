@@ -1,1 +1,0 @@
-Ensure stable scaling, diverse edge selection, balanced randomness, and problem-specific constraints incorporation. Leverage adaptive scoring and feedback for iterative improvements while prioritizing diverse score generation and exploration metrics for enhanced performance in Unified VRP heuristics.

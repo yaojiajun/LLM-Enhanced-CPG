@@ -1,1 +1,0 @@
-Refine load balancing with non-linearities, dynamic penalties, and adaptive scaling. Adjust mutation strategies, enhance time management, and fine-tune penalties for optimal routing efficiency in Unified VRP heuristics.

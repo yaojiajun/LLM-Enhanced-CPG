@@ -1,1 +1,0 @@
-1. Explore adaptive scaling for penalties and weights, incorporate dynamic constraints, refine randomness control, and leverage non-linear transformations for enhanced exploration in Unified VRP heuristics.

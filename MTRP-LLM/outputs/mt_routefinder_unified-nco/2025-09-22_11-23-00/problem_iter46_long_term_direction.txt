@@ -1,5 +1,0 @@
-1. Refine scoring formulas by integrating non-linear relationships to better capture interactions between pickup demands and route lengths.
-
-2. Employ adaptive dynamic weights and explore different noise levels to enhance robustness and prevent premature convergence.
-
-3. Test varying exponent values and clamp ranges systematically for improved balance between exploration and exploitation.

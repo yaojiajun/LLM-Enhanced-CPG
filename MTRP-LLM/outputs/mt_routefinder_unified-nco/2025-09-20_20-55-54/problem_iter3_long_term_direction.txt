@@ -1,5 +1,0 @@
-1. Experiment with adaptive feature scaling and diverse edge selection criteria for improved convergence.
-
-2. Integrate problem-specific constraints into scoring calculations for robust solutions.
-
-3. Balance randomness and informed indicators for efficient exploration and exploitation.

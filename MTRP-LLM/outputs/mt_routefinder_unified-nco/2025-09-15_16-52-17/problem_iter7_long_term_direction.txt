@@ -1,1 +1,0 @@
-Design heuristics with adaptive penalties, diverse exploration components, and efficient computations to balance exploration and exploitation effectively for improved Unified VRP solutions.

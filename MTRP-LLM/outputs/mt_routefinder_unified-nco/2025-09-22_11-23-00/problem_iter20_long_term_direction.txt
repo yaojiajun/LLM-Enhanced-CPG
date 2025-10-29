@@ -1,1 +1,0 @@
-Explore advanced non-linear transformations, refine randomness control, balance feature interactions, enhance constraint handling, and meticulously tune parameters to develop a robust heuristic for Unified VRP.

@@ -1,1 +1,0 @@
-Design heuristics with adaptive penalties balancing exploration and exploitation, leveraging problem-specific insights, diverse penalties, and efficient vectorized computations for improved Unified VRP solutions.

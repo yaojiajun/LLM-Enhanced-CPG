@@ -1,8 +1,0 @@
-import torch
-import torch
-
-def heuristics_v2(current_distance_matrix, delivery_node_demands, current_load, delivery_node_demands_open, current_load_open, time_windows, arrival_times, pickup_node_demands, current_length):
-    # Compute heuristic score matrix based on sophisticated heuristics and randomness
-    heuristic_scores = torch.rand(current_distance_matrix.size()) * 2 - 1  # Random scores between -1 and 1
-
-    return heuristic_scores

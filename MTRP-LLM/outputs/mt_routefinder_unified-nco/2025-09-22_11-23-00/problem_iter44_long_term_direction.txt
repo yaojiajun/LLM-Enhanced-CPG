@@ -1,1 +1,0 @@
-Adapt scoring functions with dynamic penalties, controlled randomness, and adjusted logic. Incorporate pickup penalties, enhance exploration through stochastic bonuses, and optimize vectorized operations for improved Unified VRP solutions.

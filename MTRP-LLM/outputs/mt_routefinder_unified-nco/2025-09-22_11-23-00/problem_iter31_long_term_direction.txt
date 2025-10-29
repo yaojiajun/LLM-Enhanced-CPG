@@ -1,4 +1,0 @@
-1. Implement adaptive weights that dynamically respond to constraint satisfaction levels for better balance.  
-2. Enhance randomness by allowing greater exploration near critical constraints.  
-3. Use real-time feedback to fine-tune distance, demand, and time scores for context-specific evaluations.  
-4. Focus on interactions between pickups, deliveries, and time windows for optimized routes.

@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/eval.py", line 175, in <module>
-    main()
-KeyboardInterrupt
