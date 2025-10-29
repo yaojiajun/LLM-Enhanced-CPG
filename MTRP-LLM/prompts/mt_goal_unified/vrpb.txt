@@ -1,0 +1,335 @@
+1:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+    # Calculate load shortage
+    load_shortage = torch.clamp(delivery_node_demands - current_load.unsqueeze(1), min=0)
+
+    # Calculate pickup capacity factor
+    pickup_capacity = 1 - torch.clamp(pickup_node_demands, max=1)
+
+    # Compute the cost for pickups considering pickup capacity
+    pickup_cost = current_distance_matrix / pickup_capacity
+
+    # Calculate total cost considering load shortage and pickup cost
+    total_cost = current_distance_matrix * load_shortage + pickup_cost
+
+    # Add noise to the total cost
+    noise = torch.rand_like(total_cost) * torch.sign(torch.randn_like(total_cost))
+    score_matrix = total_cost + noise
+
+    # Boost based on the distance
+    distance_boost = torch.exp(-0.5 * current_distance_matrix)
+
+    # Boost based on load shortage
+    load_boost = 1 - (load_shortage.float() / torch.max(load_shortage)) + torch.rand_like(load_shortage) * torch.sign(torch.randn_like(load_shortage))
+
+    # Add perturbation
+    perturbation = noise * torch.rand_like(score_matrix) * 0.1
+
+    # Final score matrix with distance and load boosts
+    final_score_matrix = score_matrix * (1 + distance_boost) * (1 + load_boost)
+
+    # Normalize the final score matrix
+    normalized_score = (final_score_matrix - final_score_matrix.min(dim=1, keepdim=True)[0]) / (final_score_matrix.max(dim=1, keepdim=True)[0] - final_score_matrix.min(dim=1, keepdim=True)[0])
+
+    # Add noise levels for additional randomness
+    noise_levels = torch.rand_like(final_score_matrix) * normalized_score
+    final_score_matrix += (perturbation * noise_levels)
+
+    # Apply strategic perturbation within a range
+    strategic_perturbation = torch.clamp(perturbation * torch.sign(torch.randn_like(final_score_matrix)), min=-0.1, max=0.1)
+    final_score_matrix += strategic_perturbation
+
+    return final_score_matrix
+
+2:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+    load_shortage = torch.clamp(delivery_node_demands - current_load.unsqueeze(1), min=0)
+    pickup_capacity = 1 - torch.clamp(pickup_node_demands, max=1)
+
+    pickup_cost = current_distance_matrix / pickup_capacity
+    total_cost = current_distance_matrix * load_shortage + pickup_cost
+
+    noise = torch.rand_like(total_cost) * torch.sign(torch.randn_like(total_cost))
+    score_matrix = total_cost + noise
+
+    distance_boost = torch.exp(-0.5 * current_distance_matrix)
+
+    load_boost = 1 - (load_shortage.float() / torch.max(load_shortage)) + torch.rand_like(load_shortage) * torch.sign(torch.randn_like(load_shortage))
+
+    perturbation = noise * torch.rand_like(score_matrix) * 0.1
+
+    final_score_matrix = score_matrix * (1 + distance_boost) * (1 + load_boost)
+
+    normalized_score = (final_score_matrix - final_score_matrix.min(dim=1, keepdim=True)[0]) / (final_score_matrix.max(dim=1, keepdim=True)[0] - final_score_matrix.min(dim=1, keepdim=True)[0])
+
+    noise_levels = torch.rand_like(final_score_matrix) * normalized_score
+
+    final_score_matrix += (perturbation * noise_levels)
+
+    balanced_perturbation = perturbation * torch.rand_like(perturbation) * 0.5
+    normalized_balanced_perturbation = balanced_perturbation / torch.max(balanced_perturbation)
+
+    final_score_matrix += normalized_balanced_perturbation
+
+    return final_score_matrix
+
+3:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+    load_shortage = torch.clamp(delivery_node_demands - current_load.unsqueeze(1), min=0)
+
+    pickup_capacity = 1 - torch.clamp(pickup_node_demands, max=1)
+
+    pickup_cost = current_distance_matrix / pickup_capacity
+    total_cost = current_distance_matrix * load_shortage + pickup_cost
+
+    noise = torch.rand_like(total_cost) * torch.sign(torch.randn_like(total_cost))
+    score_matrix = total_cost + noise
+
+    distance_boost = torch.exp(-0.5 * current_distance_matrix)
+
+    load_boost = 1 - (load_shortage.float() / torch.max(load_shortage)) + torch.rand_like(load_shortage) * torch.sign(torch.randn_like(load_shortage))
+
+    perturbation = noise * torch.rand_like(score_matrix) * 0.1
+
+    final_score_matrix = score_matrix * (1 + distance_boost) * (1 + load_boost)
+
+    normalized_score = (final_score_matrix - final_score_matrix.min(dim=1, keepdim=True)[0]) / (final_score_matrix.max(dim=1, keepdim=True)[0] - final_score_matrix.min(dim=1, keepdim=True)[0])
+
+    noise_levels = torch.rand_like(final_score_matrix) * normalized_score
+
+    final_score_matrix += (perturbation * noise_levels)
+
+    strategic_perturbation = torch.clamp(perturbation * torch.sign(torch.randn_like(final_score_matrix)), min=-0.1, max=0.1)
+
+    final_score_matrix += strategic_perturbation
+
+    return final_score_matrix
+
+4:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+    load_shortage = torch.clamp(delivery_node_demands - current_load.unsqueeze(1), min=0)
+    pickup_capacity = 1 - torch.clamp(pickup_node_demands, max=1)
+
+    pickup_cost = current_distance_matrix / pickup_capacity
+    total_cost = current_distance_matrix * load_shortage + pickup_cost
+
+    noise = torch.rand_like(total_cost) * torch.sign(torch.randn_like(total_cost))
+    score_matrix = total_cost + noise
+
+    distance_boost = torch.exp(-0.5 * current_distance_matrix)
+
+    load_boost = 1 - (load_shortage.float() / torch.max(load_shortage)) + torch.rand_like(load_shortage) * torch.sign(torch.randn_like(load_shortage))
+
+    perturbation = noise * torch.rand_like(score_matrix) * 0.1
+
+    final_score_matrix = score_matrix * (1 + distance_boost) * (1 + load_boost)
+
+    normalized_score = (final_score_matrix - final_score_matrix.min(dim=1, keepdim=True)[0]) / (final_score_matrix.max(dim=1, keepdim=True)[0] - final_score_matrix.min(dim=1, keepdim=True)[0])
+
+    noise_levels = torch.rand_like(final_score_matrix) * normalized_score
+
+    final_score_matrix += (perturbation * noise_levels)
+
+    strategic_perturbation = torch.clamp(perturbation * torch.sign(torch.randn_like(final_score_matrix)), min=-0.1, max=0.1)
+
+    final_score_matrix += strategic_perturbation
+
+    return final_score_matrix
+
+5:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+    load_shortage = torch.clamp(delivery_node_demands - current_load.unsqueeze(1), min=0)
+    pickup_capacity = 1 - torch.clamp(pickup_node_demands, max=1)
+
+    pickup_cost = current_distance_matrix / pickup_capacity
+    total_cost = current_distance_matrix * load_shortage + pickup_cost
+
+    noise = torch.rand_like(total_cost) * torch.sign(torch.randn_like(total_cost))
+    score_matrix = total_cost + noise
+
+    distance_boost = torch.exp(-0.5 * current_distance_matrix)  # Balance noise and boosting factors with exponential decay
+    load_boost = 1 - (load_shortage.float() / torch.max(load_shortage)) + torch.rand_like(load_shortage) * torch.sign(torch.randn_like(load_shortage))
+
+    perturbation = noise * torch.rand_like(score_matrix) * 0.1
+
+    final_score_matrix = score_matrix * (1 + distance_boost) * (1 + load_boost)
+
+    normalized_score = (final_score_matrix - final_score_matrix.min(dim=1, keepdim=True)[0]) / (final_score_matrix.max(dim=1, keepdim=True)[0] - final_score_matrix.min(dim=1, keepdim=True)[0])
+
+    noise_levels = torch.rand_like(final_score_matrix) * normalized_score
+
+    final_score_matrix += (perturbation * noise_levels)
+
+    strategic_perturbation = torch.clamp(perturbation * torch.sign(torch.randn_like(final_score_matrix)), min=-0.1, max=0.1)
+
+    final_score_matrix += strategic_perturbation
+
+    return final_score_matrix
+
+6:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+
+    # Calculate load shortage for delivery nodes
+    load_shortage = torch.clamp(delivery_node_demands - current_load.unsqueeze(1), min=0)
+
+    # Calculate pickup capacity based on pickup demands
+    pickup_capacity = 1.0 - torch.clamp(pickup_node_demands, max=1.0)
+
+    # Compute cost for delivering goods to nodes based on load shortage
+    delivery_cost = current_distance_matrix * load_shortage
+
+    # Compute cost for picking up goods from nodes based on pickup capacity
+    pickup_cost = current_distance_matrix / (pickup_capacity + 1e-6)  # Adding small epsilon to prevent division by zero
+
+    # Combine delivery and pickup costs
+    total_cost = delivery_cost + pickup_cost
+
+    # Introduce noise to the total cost matrix
+    noise = torch.rand_like(total_cost) * torch.sign(torch.randn_like(total_cost))
+    score_matrix = total_cost + noise
+
+    # Perturb distances to encourage exploration
+    distance_noise = torch.rand_like(current_distance_matrix) * torch.sign(torch.randn_like(current_distance_matrix))
+    distance_boost = 1 / (current_distance_matrix + 1) + distance_noise
+
+    # Perturb load shortages to introduce variability
+    load_noise = torch.rand_like(load_shortage) * torch.sign(torch.randn_like(load_shortage))
+    load_boost = 1.0 - (load_shortage.float() / torch.max(load_shortage)) + load_noise
+
+    # Perturb the score matrix with distances and load shortages
+    distance_perturbation = noise * torch.rand_like(score_matrix) * 0.1
+    load_perturbation = noise * torch.rand_like(score_matrix) * 0.05
+
+    # Apply boosting factors to the final score matrix
+    final_score_matrix = score_matrix * (1 + distance_boost) * (1 + load_boost)
+
+    # Normalize the final score matrix
+    normalized_score = (final_score_matrix - final_score_matrix.min(dim=1, keepdim=True)[0]) / (final_score_matrix.max(dim=1, keepdim=True)[0] - final_score_matrix.min(dim=1, keepdim=True)[0])
+
+    # Introduce noise levels to encourage diversity in edge selection
+    noise_levels = torch.rand_like(final_score_matrix) * normalized_score
+
+    # Perturb the final score matrix with noise levels
+    final_score_matrix += (distance_perturbation * noise_levels) + (load_perturbation * noise_levels)
+
+    return final_score_matrix
+
+7:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+
+    load_shortage = torch.clamp(delivery_node_demands - current_load.unsqueeze(1), min=0)
+    pickup_capacity = 1 - torch.clamp(pickup_node_demands, max=1)
+
+    delivery_cost = current_distance_matrix * load_shortage
+    pickup_cost = current_distance_matrix / pickup_capacity
+
+    total_cost = 0.7 * delivery_cost + 0.3 * pickup_cost  # Balanced cost computation
+
+    noise = torch.rand_like(total_cost) * torch.sign(torch.randn_like(total_cost))
+    score_matrix = total_cost + noise
+
+    distance_noise = torch.rand_like(current_distance_matrix) * torch.sign(torch.randn_like(current_distance_matrix))
+    distance_boost = 1 / (current_distance_matrix + 1) + distance_noise
+
+    load_noise = torch.rand_like(load_shortage) * torch.sign(torch.randn_like(load_shortage))
+    load_boost = 1 - (load_shortage.float() / torch.max(load_shortage)) + load_noise
+
+    distance_perturbation = noise * torch.rand_like(score_matrix) * 0.1
+    load_perturbation = noise * torch.rand_like(score_matrix) * 0.05
+
+    final_score_matrix = score_matrix * (1 + distance_boost) * (1 + load_boost)  # Boosted factors
+
+    normalized_score = (final_score_matrix - final_score_matrix.min(dim=1, keepdim=True)[0]) / (final_score_matrix.max(dim=1, keepdim=True)[0] - final_score_matrix.min(dim=1, keepdim=True)[0])
+
+    noise_levels = torch.rand_like(final_score_matrix) * normalized_score * 0.2  # Diversified exploration
+
+    final_score_matrix += 0.15 * (distance_perturbation * noise_levels) + 0.25 * (load_perturbation * noise_levels)  # Augmented perturbation
+
+    return final_score_matrix
+
+8:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+
+    # Calculate load shortage for delivery nodes
+    load_shortage = torch.clamp(delivery_node_demands - current_load.unsqueeze(1), min=0)
+
+    # Calculate pickup capacity based on pickup demands
+    pickup_capacity = 1 - torch.clamp(pickup_node_demands, max=1)
+
+    # Compute cost for delivering goods to nodes based on load shortage
+    delivery_cost = current_distance_matrix * load_shortage
+
+    # Compute cost for picking up goods from nodes based on pickup capacity
+    pickup_cost = current_distance_matrix / pickup_capacity
+
+    # Combine delivery and pickup costs
+    total_cost = delivery_cost + pickup_cost
+
+    # Introduce noise to the total cost matrix
+    noise = torch.rand_like(total_cost) * torch.sign(torch.randn_like(total_cost))
+    score_matrix = total_cost + noise
+
+    # Perturb distances to encourage exploration
+    distance_noise = torch.rand_like(current_distance_matrix) * torch.sign(torch.randn_like(current_distance_matrix))
+    distance_boost = 1 / (current_distance_matrix + 1) + distance_noise
+
+    # Perturb load shortages to introduce variability
+    load_noise = torch.rand_like(load_shortage) * torch.sign(torch.randn_like(load_shortage))
+    load_boost = 1 - (load_shortage.float() / torch.max(load_shortage)) + load_noise
+
+    # Perturb the score matrix with distances and load shortages
+    distance_perturbation = noise * torch.rand_like(score_matrix) * 0.1
+    load_perturbation = noise * torch.rand_like(score_matrix) * 0.05
+
+    # Apply boosting factors to the final score matrix
+    final_score_matrix = score_matrix * (1 + distance_boost) * (1 + load_boost)
+
+    # Normalize the final score matrix
+    normalized_score = (final_score_matrix - final_score_matrix.min(dim=1, keepdim=True)[0]) / (final_score_matrix.max(dim=1, keepdim=True)[0] - final_score_matrix.min(dim=1, keepdim=True)[0])
+
+    # Introduce noise levels to encourage diversity in edge selection
+    noise_levels = torch.rand_like(final_score_matrix) * normalized_score
+
+    # Perturb the final score matrix with noise levels
+    final_score_matrix += (distance_perturbation * noise_levels) + (load_perturbation * noise_levels)
+
+    return final_score_matrix
+
+9:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+
+    load_shortage = torch.clamp(delivery_node_demands - current_load.unsqueeze(1), min=0)
+    pickup_capacity = 1 - torch.clamp(pickup_node_demands, max=1)
+
+    delivery_cost = current_distance_matrix * load_shortage
+    pickup_cost = current_distance_matrix / pickup_capacity
+
+    total_cost = delivery_cost + pickup_cost
+
+    noise = torch.rand_like(total_cost) * torch.sign(torch.randn_like(total_cost))
+    score_matrix = total_cost + noise
+
+    distance_noise = torch.rand_like(current_distance_matrix) * torch.sign(torch.randn_like(current_distance_matrix))
+    distance_boost = 1 / (current_distance_matrix + 1) + distance_noise
+
+    load_noise = torch.rand_like(load_shortage) * torch.sign(torch.randn_like(load_shortage))
+    load_boost = 1 - (load_shortage.float() / torch.max(load_shortage)) + load_noise
+
+    distance_perturbation = noise * torch.rand_like(score_matrix) * 0.1
+    load_perturbation = noise * torch.rand_like(score_matrix) * 0.05
+
+    final_score_matrix = score_matrix * (1 + distance_boost) * (1 + load_boost)
+
+    normalized_score = (final_score_matrix - final_score_matrix.min(dim=1, keepdim=True)[0]) / (final_score_matrix.max(dim=1, keepdim=True)[0] - final_score_matrix.min(dim=1, keepdim=True)[0])
+
+    noise_levels = torch.rand_like(final_score_matrix) * normalized_score
+
+    final_score_matrix += (distance_perturbation * noise_levels) + (load_perturbation * noise_levels)
+
+    return final_score_matrix
+
+10:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+
+    remaining_delivery_cap = current_load[:, None] - delivery_node_demands
+    remaining_pickup_cap = current_load[:, None] + pickup_node_demands
+
+    cap_constraint_score = torch.where((remaining_delivery_cap >= 0) & (remaining_pickup_cap >= 0), torch.randn_like(current_distance_matrix), -torch.abs(torch.randn_like(current_distance_matrix)) * 2.0)
+
+    strategic_noise = torch.abs(torch.randn_like(cap_constraint_score)) * torch.randn_like(cap_constraint_score) * 2.0
+
+    dynamic_randomness = torch.randn_like(cap_constraint_score)
+
+    heuristic_score = cap_constraint_score + 0.4 * dynamic_randomness + strategic_noise + 0.6 * dynamic_randomness
+
+    return heuristic_score

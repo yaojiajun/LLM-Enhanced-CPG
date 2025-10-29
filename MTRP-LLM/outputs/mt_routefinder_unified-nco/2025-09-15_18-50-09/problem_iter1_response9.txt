@@ -1,0 +1,46 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Initialize the heuristic score matrix with zeros
+    heuristic_scores = torch.zeros_like(current_distance_matrix)
+    
+    # Constraints checks
+    # Check capacity for delivery nodes
+    delivery_capacity_check = (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0)).float()
+    # Open route capacity checks
+    delivery_capacity_check_open = (current_load_open.unsqueeze(1) >= delivery_node_demands_open.unsqueeze(0)).float()
+    
+    # Time window feasibility
+    time_within_windows = ((arrival_times.unsqueeze(2) + current_distance_matrix.unsqueeze(1) >= time_windows[:, 0].unsqueeze(0).unsqueeze(0)).float() *
+                            (arrival_times.unsqueeze(2) + current_distance_matrix.unsqueeze(1) <= time_windows[:, 1].unsqueeze(0).unsqueeze(0)).float())
+
+    # Effective route length checks
+    effective_length_check = (current_length.unsqueeze(1) >= current_distance_matrix).float()
+    
+    # Score based on distance and constraints passed
+    base_scores = -1 * current_distance_matrix  # Lower distance is better
+    
+    # Combine constraints to derive heuristic scores for delivery nodes
+    feasible_delivery_nodes = delivery_capacity_check * time_within_windows * effective_length_check
+    heuristic_scores += feasible_delivery_nodes * base_scores
+    
+    # Similarly compute scores for open route situation
+    feasible_delivery_nodes_open = delivery_capacity_check_open * time_within_windows * effective_length_check
+    heuristic_scores += feasible_delivery_nodes_open * base_scores
+    
+    # Introducing enhanced randomness to escape local optima
+    noise = torch.rand_like(heuristic_scores) * 0.01  # Small noise perturbation
+    heuristic_scores += noise
+
+    return heuristic_scores
+```

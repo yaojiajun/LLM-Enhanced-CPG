@@ -1,0 +1,21 @@
+import torch
+import numpy as np
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Normalize input tensors for stability
+    eps = 1e-8
+    delivery_node_demands_norm = delivery_node_demands + eps
+    current_load_norm = current_load + eps
+    delivery_node_demands_open_norm = delivery_node_demands_open + eps
+    current_load_open_norm = current_load_open + eps
+
+    # Calculate heuristic scores with controlled randomness
+    heuristic_scores = torch.randn_like(current_distance_matrix) / (delivery_node_demands_norm.unsqueeze(0) * current_load_norm.unsqueeze(1) * delivery_node_demands_open_norm.unsqueeze(0) * current_load_open_norm.unsqueeze(1))
+
+    # Apply constraints and stability measures
+    heuristic_scores[torch.isinf(heuristic_scores)] = 0
+    heuristic_scores[torch.isnan(heuristic_scores)] = 0
+
+    return heuristic_scores

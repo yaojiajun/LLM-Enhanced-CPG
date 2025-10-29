@@ -1,0 +1,3 @@
+The `heuristics` function that computes a heuristic matrix intended to be used as an attention bias for a Vehicle Routing Problem with Time Windows (VRPTW). The function computes a batch of heuristic indicator matrices to guide node selection, prioritizing edges that minimize travel distance while respecting time windows. It supports multiple problem instances and POMO (Parallel Optimization Multi-Output) trajectories.
+This function's role is to provide a pure heuristics_matrix for each potential edge, assuming that hard constraints (like time windows or capacity) are enforced by an external mechanism. The score should reflect the intrinsic "desirability" of an edge, primarily based on travel distance.
+

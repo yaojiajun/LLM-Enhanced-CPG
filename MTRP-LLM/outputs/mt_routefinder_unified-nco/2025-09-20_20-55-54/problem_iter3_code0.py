@@ -1,0 +1,24 @@
+import torch
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Normalize the distance matrix
+    norm_distance_matrix = current_distance_matrix / (current_distance_matrix.max() + 1e-8)
+
+    # Calculate load ratios to identify nodes violating capacity constraints
+    load_ratios = current_load.unsqueeze(1) / (delivery_node_demands + 1e-8)
+    
+    # Penalize infeasible load edges
+    infeasible_load_penalty = torch.where(load_ratios > 1, -torch.abs(load_ratios - 1), torch.zeros_like(load_ratios))
+
+    # Calculate time window violation penalty
+    time_window_penalty = torch.where((arrival_times > time_windows[:, 1].unsqueeze(0)) | (arrival_times < time_windows[:, 0].unsqueeze(0)), -torch.abs(arrival_times - time_windows[:, 0].unsqueeze(0)), torch.zeros_like(arrival_times))
+
+    # Introduce controlled randomness for exploration
+    exploration_noise = torch.rand_like(current_distance_matrix) * 0.1  # 10% randomness
+    
+    # Combine penalties and randomness to form heuristic scores
+    heuristic_scores = norm_distance_matrix + infeasible_load_penalty + time_window_penalty + exploration_noise
+    
+    return heuristic_scores

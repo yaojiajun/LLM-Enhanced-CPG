@@ -1,0 +1,45 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Constants for scoring
+    CAPACITY_SCALE = -10
+    TIME_WINDOW_SCALE = -5
+    DISTANCE_SCALE = -1
+    PICKUP_SCALE = -2
+
+    # Compute capacity violation for deliveries
+    capacity_delivery_mask = (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0)).float()
+    
+    # Compute capacity violation for pickup (For open routes)
+    capacity_pickup_mask = (current_load_open.unsqueeze(1) >= pickup_node_demands.unsqueeze(0)).float()
+    
+    # Compute time window violations
+    time_window_opening = (arrival_times.unsqueeze(1) < time_windows[:, 0].unsqueeze(0)).float()     # Arrival too early
+    time_window_closing = (arrival_times.unsqueeze(1) > time_windows[:, 1].unsqueeze(0)).float()    # Arrival too late
+    valid_time_window_mask = 1 - time_window_opening - time_window_closing
+    
+    # Remaining length for routes 
+    length_remaining = current_length.unsqueeze(1) >= current_distance_matrix
+    
+    # Calculate heuristic scores
+    scores = (CAPACITY_SCALE * (capacity_delivery_mask * delivery_node_demands.unsqueeze(0)).sum(dim=1) +
+              PICKUP_SCALE * (capacity_pickup_mask * pickup_node_demands.unsqueeze(0)).sum(dim=1) +
+              TIME_WINDOW_SCALE * (valid_time_window_mask * (1 - time_window_opening - time_window_closing)).sum(dim=1) +
+              DISTANCE_SCALE * current_distance_matrix)
+
+    # Add randomness to avoid local optima
+    random_factors = torch.rand_like(scores) * 0.1  # Randomness in a small scale
+    scores += random_factors
+
+    return scores
+```

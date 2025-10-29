@@ -1,0 +1,1 @@
+Design heuristics for Unified VRP by optimizing weights, emphasizing load balancing and time management, leveraging controlled randomness, and balancing penalties judiciously for improved route feasibility and optimization.

@@ -1,0 +1,24 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Compute metric combining distance and load capacity for normal routes
+    distance_capacity_ratio = current_distance_matrix / (delivery_node_demands.unsqueeze(0) + 1e-8)
+    capacity_score = 1 / (1 + distance_capacity_ratio)
+
+    # Include time window constraints
+    time_window_weights = (time_windows[:, 1].unsqueeze(0) - arrival_times) / (time_windows[:, 1].unsqueeze(0) - time_windows[:, 0].unsqueeze(0) + 1e-8)
+    time_window_penalty = F.relu(-time_window_weights)  # Apply penalty for visiting nodes early
+
+    # Combine capacity and time window scores
+    route_scores = 0.6 * capacity_score + 0.4 * time_window_penalty
+
+    # Consider open routes by evaluating load capacities separately
+    distance_capacity_ratio_open = current_distance_matrix / (delivery_node_demands_open.unsqueeze(0) + 1e-8)
+    capacity_score_open = 1 / (1 + distance_capacity_ratio_open)
+
+    return 0.8 * route_scores + 0.2 * capacity_score_open
+
+```  

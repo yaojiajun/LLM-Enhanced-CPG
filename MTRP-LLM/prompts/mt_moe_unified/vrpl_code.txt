@@ -1,0 +1,14 @@
+1:def heuristics_v2(cvrp_scores: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    device = cvrp_scores.device
+
+    feasibility_mask = current_length.unsqueeze(1) >= cvrp_scores[:, 1:]
+
+    compensation_factor = 0.3  # Improved compensation factor for enhanced backhaul-criticality assessment
+
+    backhaul_compensation = feasibility_mask.to(torch.float32) * cvrp_scores[:, 1:] * compensation_factor
+
+    backhaul_compensation = torch.cat((torch.zeros(cvrp_scores.size(0), 1, device=device), backhaul_compensation), dim=1)
+
+    vrpb_scores = cvrp_scores + backhaul_compensation
+    return vrpb_scores

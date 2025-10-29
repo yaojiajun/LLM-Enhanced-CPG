@@ -1,0 +1,39 @@
+import torch
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor,
+                  current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor,
+                  current_load_open: torch.Tensor, time_windows: torch.Tensor,
+                  arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor,
+                  current_length: torch.Tensor) -> torch.Tensor:
+
+    # Define epsilon for numerical stability
+    epsilon = 1e-8
+
+    # Potential (score prerequisites)
+    
+    # Delivery feasibility scores
+    delivery_capacity_scores = (current_load.unsqueeze(1) - delivery_node_demands.unsqueeze(0)) > epsilon
+    valid_load_delivery = delivery_capacity_scores.float()
+
+    # Time window checks
+    time_window_scores = (arrival_times < time_windows[:, 1].unsqueeze(0)) & (arrival_times > time_windows[:, 0].unsqueeze(0))
+    valid_time_windows = time_window_scores.float()
+
+    # Duration feasibility
+    duration_scores = (current_length.unsqueeze(1) - current_distance_matrix) >= -epsilon
+    valid_durations = duration_scores.float()
+
+    # Validity aggregate
+    valid_routes_mask = valid_load_delivery * valid_time_windows * valid_durations
+
+    # Calculating heuristic scores based on valid actions
+    heuristic_scores = -current_distance_matrix + torch.randn_like(current_distance_matrix) * epsilon
+
+    # Apply mask for invalid paths (set negative scores)
+    heuristic_scores = heuristic_scores * valid_routes_mask
+
+    # Clamp invalid scoring to avoid harmful output
+    heuristic_scores = torch.clamp(heuristic_scores, min=-1e10, max=1e10)
+
+    return heuristic_scores

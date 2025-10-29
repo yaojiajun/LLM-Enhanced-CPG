@@ -1,0 +1,28 @@
+The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated, Time Windows, Backhauls, open routes and duration limits.
+
+
+The inputs are:
+
+current_distance_matrix: Tensor (pomo_size, N+1), the distance matrix from the current node to all other nodes.
+
+delivery_node_demands: Tensor (N+1) – Delivery demand at each node; used to assess whether the vehicle has sufficient remaining load to deliver.
+
+current_load: Tensor (pomo_size) – Remaining capacity of the vehicle at each trajectory. This is used to determine whether visiting a node is feasible under the current load constraints.
+
+time_windows: Tensor (N+1, 2) – Earliest and latest allowed service times at each node. Used to evaluate time window feasibility and waiting time computation.
+
+arrival_times: Tensor (pomo_size, N+1) – Estimated arrival times at the next node for each trajectory from the current node position.
+
+
+
+pickup_node_demands: Tensor (N+1) – Pickup demand at each node, used to evaluate if the vehicle has sufficient capacity to collect.
+
+current_length: Tensor (pomo_size) –Remaining route duration (length) budget of the vehicle at each trajectory. This is used to determine whether visiting a node is feasible under the current length constraints, ensuring the total route length does not exceed preset thresholds.
+
+Output:
+
+The function returns a heuristic score matrix of shape (pomo_size, N+1), assigning positive scores to promising edges and negative scores to undesirable edges.
+
+Implementation Requirements:
+Fully vectorized implementation for optimized GPU execution.
+

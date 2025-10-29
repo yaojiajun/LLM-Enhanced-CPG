@@ -1,0 +1,42 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Initialize heuristic score matrix
+    heuristic_scores = torch.zeros_like(current_distance_matrix)
+    
+    # Calculate potential deliveries based on capacity
+    capacity_constraints = (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0)).float()
+    
+    # Calculate open route capacity constraints
+    open_route_constraints = (current_load_open.unsqueeze(1) >= delivery_node_demands_open.unsqueeze(0)).float()
+
+    # Calculate time window feasibility
+    current_time = arrival_times.unsqueeze(2) + current_distance_matrix.unsqueeze(1)
+    time_window_validity = ((current_time >= time_windows[:, 0].unsqueeze(0).unsqueeze(1)) &
+                             (current_time <= time_windows[:, 1].unsqueeze(0).unsqueeze(1))).float()
+
+    # Calculate remaining length constraints
+    length_constraints = (current_length.unsqueeze(1) >= current_distance_matrix).float()
+    
+    # Combine all constraints to form feasible routes
+    feasibility = capacity_constraints * open_route_constraints * time_window_validity * length_constraints
+    
+    # Calculate inverse distance for heuristic scoring (lower distance = higher score)
+    inverse_distance = 1.0 / (current_distance_matrix + 1e-5)
+    
+    # Incorporate randomness to escape local optima
+    randomness = torch.rand_like(inverse_distance) * 0.1  # introducing a small degree of randomness
+    
+    # Calculate heuristic scores
+    heuristic_scores = feasibility * (inverse_distance + randomness)
+    
+    # Apply negative scoring for infeasible options
+    heuristic_scores[feasibility == 0] = -1e5  # Assigning a large negative score to infeasible routes
+
+    return heuristic_scores
+```

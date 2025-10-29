@@ -1,0 +1,31 @@
+/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/lightning/pytorch/utilities/parsing.py:210: Attribute 'env' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['env'])`.
+/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/lightning/pytorch/utilities/parsing.py:210: Attribute 'policy' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['policy'])`.
+Provided file name ['data/cvrp/val/100.npz', 'data/ovrp/val/100.npz', 'data/ovrpb/val/100.npz', 'data/ovrpbl/val/100.npz', 'data/ovrpbltw/val/100.npz', 'data/ovrpbtw/val/100.npz', 'data/ovrpl/val/100.npz', 'data/ovrpltw/val/100.npz', 'data/ovrptw/val/100.npz', 'data/vrpb/val/100.npz', 'data/vrpl/val/100.npz', 'data/vrpbltw/val/100.npz', 'data/vrpbtw/val/100.npz', 'data/vrpbl/val/100.npz', 'data/vrpltw/val/100.npz', 'data/vrptw/val/100.npz', 'data/cvrp/val/50.npz', 'data/vrptw/val/50.npz'] not found. Make sure to provide a file in the right path first or unset val_file to generate data automatically instead
+No solution file found at data/cvrp/test/100_sol_pyvrp.npz
+No solution file found at data/ovrp/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpb/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpbl/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpbltw/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpbtw/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpl/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpltw/test/100_sol_pyvrp.npz
+No solution file found at data/ovrptw/test/100_sol_pyvrp.npz
+No solution file found at data/vrpb/test/100_sol_pyvrp.npz
+No solution file found at data/vrpl/test/100_sol_pyvrp.npz
+No solution file found at data/vrpbltw/test/100_sol_pyvrp.npz
+No solution file found at data/vrpbtw/test/100_sol_pyvrp.npz
+No solution file found at data/vrpbl/test/100_sol_pyvrp.npz
+No solution file found at data/vrpltw/test/100_sol_pyvrp.npz
+No solution file found at data/vrptw/test/100_sol_pyvrp.npz
+Provided file name ['data/cvrp/test/100.npz', 'data/ovrp/test/100.npz', 'data/ovrpb/test/100.npz', 'data/ovrpbl/test/100.npz', 'data/ovrpbltw/test/100.npz', 'data/ovrpbtw/test/100.npz', 'data/ovrpl/test/100.npz', 'data/ovrpltw/test/100.npz', 'data/ovrptw/test/100.npz', 'data/vrpb/test/100.npz', 'data/vrpl/test/100.npz', 'data/vrpbltw/test/100.npz', 'data/vrpbtw/test/100.npz', 'data/vrpbl/test/100.npz', 'data/vrpltw/test/100.npz', 'data/vrptw/test/100.npz', 'data/cvrp/test/50.npz', 'data/vrptw/test/50.npz'] not found. Make sure to provide a file in the right path first or unset test_file to generate data automatically instead
+No solution file found at data/cvrp/test/100_sol_pyvrp.npz
+16.240219116210938
+No solution file found at data/vrptw/test/100_sol_pyvrp.npz
+27.503334045410156
+No solution file found at data/ovrp/test/100_sol_pyvrp.npz
+10.301032066345215
+No solution file found at data/vrpb/test/100_sol_pyvrp.npz
+15.211414337158203
+No solution file found at data/vrpl/test/100_sol_pyvrp.npz
+16.395009994506836
+17.13020191192627

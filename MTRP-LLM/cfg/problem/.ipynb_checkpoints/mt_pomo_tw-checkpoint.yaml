@@ -1,0 +1,9 @@
+problem_name: mt_pomo_tw
+problem_type: nco
+obj_type: min
+problem_size: 100 # problem size for training
+func_name: heuristics
+description: |
+  I need assistance in designing a new heuristic to improve the solution of the Vehicle Routing Problem with Time Windows (VRPTW) by incorporating insights from prior heuristics. The VRPTW requires finding a set of optimal routes for a fleet of vehicles to serve all given customers and return to the depot. This problem is defined by two primary constraints: firstly, each customer has a demand, and the total demand of the customers served by a single vehicle cannot exceed its capacity. Secondly, and crucially, each customer must be visited within a specific time window, defined by an earliest and a latest possible service time. The objective is to minimize the total travel distance or time while adhering to both capacity and time window constraints.
+pro: Vehicle Routing Problem with Time Windows (VRPTW)
+alg: Neural Combinatorial Optimization

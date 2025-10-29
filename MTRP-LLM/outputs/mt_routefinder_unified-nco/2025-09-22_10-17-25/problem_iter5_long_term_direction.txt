@@ -1,0 +1,1 @@
+Enhance heuristic design by incorporating non-linear distance transformations, tailored load prioritization, nuanced randomness control, and efficient GPU optimization for improved exploration and convergence in Unified VRP.

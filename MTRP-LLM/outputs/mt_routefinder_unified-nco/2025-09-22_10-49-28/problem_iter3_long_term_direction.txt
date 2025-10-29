@@ -1,0 +1,1 @@
+Prioritize diverse and informative heuristic indicators. Balance exploration-exploitation with tailored randomness. Emphasize high-demand nodes, coherent score adjustments, and optimized weight adjustments for edge selection in Unified VRP.

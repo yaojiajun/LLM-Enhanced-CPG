@@ -1,0 +1,20 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix, delivery_node_demands, current_load, delivery_node_demands_open, 
+                   current_load_open, time_windows, arrival_times, pickup_node_demands, current_length):
+
+    # Compute heuristic scores based on various factors such as distance, load constraints, time windows, and route length
+    distance_scores = -current_distance_matrix  # Negative of distance can be used as a score
+    load_scores = -torch.abs((delivery_node_demands - current_load) + (delivery_node_demands_open - current_load_open))
+    time_window_scores = F.relu(arrival_times - time_windows[:, 1]) - F.relu(time_windows[:, 0] - arrival_times)
+    pickup_scores = -pickup_node_demands / (current_load + current_load_open + 1e-5)  # Avoid division by zero
+    length_scores = -current_length / (torch.max(current_length, dim=0).values + 1e-5)
+
+    # Combine different scores using a weighted sum or other appropriate methods
+    heuristic_scores = 0.4 * distance_scores + 0.2 * load_scores + 0.1 * time_window_scores + 0.1 * pickup_scores + 0.2 * length_scores
+
+    return heuristic_scores
+
+```

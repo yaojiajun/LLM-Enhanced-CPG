@@ -1,0 +1,16 @@
+import torch
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Introduce a mix of exploration and exploitation with problem-specific scaling factors
+    max_exploration_factor = 0.1
+    max_exploitation_factor = 0.05
+
+    exploration_factor = torch.rand_like(current_distance_matrix) * max_exploration_factor
+    exploitation_factor = torch.randn_like(current_distance_matrix) * max_exploitation_factor
+
+    # Compute heuristic scores incorporating exploration and exploitation factors
+    heuristic_scores = current_distance_matrix * (1 + exploration_factor) + exploitation_factor
+
+    return heuristic_scores

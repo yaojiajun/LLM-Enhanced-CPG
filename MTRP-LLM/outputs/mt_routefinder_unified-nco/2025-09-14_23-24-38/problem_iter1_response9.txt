@@ -1,0 +1,19 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    alpha = 0.5
+    beta = 0.5
+    noise = 0.1
+
+    load_factor = current_load / delivery_node_demands
+    open_load_factor = current_load_open / delivery_node_demands_open
+    time_window_violation = torch.minimum(arrival_times - time_windows[:, 1], time_windows[:, 0] - arrival_times).sum(dim=1)
+
+    scores = alpha * load_factor + beta * open_load_factor - noise * time_window_violation
+    scores = F.softmax(scores, dim=1)
+
+    return scores
+
+```

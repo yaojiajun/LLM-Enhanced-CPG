@@ -1,0 +1,31 @@
+1:def heuristics_v2(cvrp_scores: torch.Tensor, time_windows: torch.Tensor, current_time: torch.Tensor) -> torch.Tensor:
+    estimated_arrival_time = current_time[:, None] + cvrp_scores
+
+    waiting_time_before = time_windows[None, :, 0] - estimated_arrival_time
+    waiting_time_after = estimated_arrival_time - time_windows[None, :, 1]
+
+    waiting_time_penalty_before = torch.clamp(waiting_time_before, min=0)
+    waiting_time_penalty_after = torch.clamp(waiting_time_after, min=0)
+
+    total_waiting_penalty = 2.0 * (waiting_time_penalty_before + waiting_time_penalty_after)
+
+    urgency_factor = torch.clamp((time_windows[None, :, 1] - estimated_arrival_time) /
+                                  (time_windows[None, :, 1] - time_windows[None, :, 0] + 1e-6), 0, 1)
+
+    # Adaptive and nonlinear urgency adjustment; enhanced sensitivity to urgency
+    urgency_weighting = torch.where(urgency_factor < 0.5,
+                                     1.5 * torch.pow(urgency_factor, 3),
+                                     torch.pow(urgency_factor, 2))
+
+    # Multi-tier penalty structures: greater penalties for more severe time violations
+    waiting_time_penalty = waiting_time_penalty_before + waiting_time_penalty_after
+    adjusted_penalty = torch.where(waiting_time_penalty > 0,
+                                   waiting_time_penalty * (1 + urgency_weighting),
+                                   waiting_time_penalty)
+
+    time_compensation = -adjusted_penalty * urgency_weighting
+
+    # Maintain the integrity of the original cvrp_scores while incorporating improved penalties
+    vrptw_scores = cvrp_scores + time_compensation
+
+    return vrptw_scores

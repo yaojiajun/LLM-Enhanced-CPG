@@ -1,0 +1,1 @@
+Refine mutation factor, optimize load balancing, enhance time window management, improve pickup logic, and control randomness for more effective Unified VRP heuristics.

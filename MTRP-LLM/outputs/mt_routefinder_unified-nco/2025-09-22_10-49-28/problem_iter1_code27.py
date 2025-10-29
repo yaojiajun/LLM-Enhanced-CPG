@@ -1,0 +1,17 @@
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Modify heuristics related to 'current_distance_matrix', 'delivery_node_demands', and 'current_load'
+    
+    # Compute an adjusted distance-based heuristic score with a focus on closer nodes and added randomness
+    adjusted_distance_scores = -(current_distance_matrix / torch.max(current_distance_matrix)) ** 2 + torch.randn_like(current_distance_matrix) * 0.7
+    
+    # Update demand-based heuristic score with an emphasis on current load vs delivery demands and decreased randomness
+    demand_scores = ((current_load.unsqueeze(1) + delivery_node_demands) * 0.5) - delivery_node_demands + torch.randn_like(current_distance_matrix) * 0.31
+    
+    # Combine the adjusted distance and updated demand scores with increased noise for exploration
+    v2_scores = adjusted_distance_scores + demand_scores + torch.randn_like(current_distance_matrix) * 0.5
+    
+    # Process remaining heuristics scores similarly to previous code
+    # ...
+    
+    return v2_scores

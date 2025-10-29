@@ -1,0 +1,58 @@
+/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/lightning/pytorch/utilities/parsing.py:210: Attribute 'env' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['env'])`.
+/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/lightning/pytorch/utilities/parsing.py:210: Attribute 'policy' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['policy'])`.
+Provided file name ['data/cvrp/val/100.npz', 'data/ovrp/val/100.npz', 'data/ovrpb/val/100.npz', 'data/ovrpbl/val/100.npz', 'data/ovrpbltw/val/100.npz', 'data/ovrpbtw/val/100.npz', 'data/ovrpl/val/100.npz', 'data/ovrpltw/val/100.npz', 'data/ovrptw/val/100.npz', 'data/vrpb/val/100.npz', 'data/vrpl/val/100.npz', 'data/vrpbltw/val/100.npz', 'data/vrpbtw/val/100.npz', 'data/vrpbl/val/100.npz', 'data/vrpltw/val/100.npz', 'data/vrptw/val/100.npz', 'data/cvrp/val/50.npz', 'data/vrptw/val/50.npz'] not found. Make sure to provide a file in the right path first or unset val_file to generate data automatically instead
+No solution file found at data/cvrp/test/100_sol_pyvrp.npz
+No solution file found at data/ovrp/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpb/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpbl/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpbltw/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpbtw/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpl/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpltw/test/100_sol_pyvrp.npz
+No solution file found at data/ovrptw/test/100_sol_pyvrp.npz
+No solution file found at data/vrpb/test/100_sol_pyvrp.npz
+No solution file found at data/vrpl/test/100_sol_pyvrp.npz
+No solution file found at data/vrpbltw/test/100_sol_pyvrp.npz
+No solution file found at data/vrpbtw/test/100_sol_pyvrp.npz
+No solution file found at data/vrpbl/test/100_sol_pyvrp.npz
+No solution file found at data/vrpltw/test/100_sol_pyvrp.npz
+No solution file found at data/vrptw/test/100_sol_pyvrp.npz
+Provided file name ['data/cvrp/test/100.npz', 'data/ovrp/test/100.npz', 'data/ovrpb/test/100.npz', 'data/ovrpbl/test/100.npz', 'data/ovrpbltw/test/100.npz', 'data/ovrpbtw/test/100.npz', 'data/ovrpl/test/100.npz', 'data/ovrpltw/test/100.npz', 'data/ovrptw/test/100.npz', 'data/vrpb/test/100.npz', 'data/vrpl/test/100.npz', 'data/vrpbltw/test/100.npz', 'data/vrpbtw/test/100.npz', 'data/vrpbl/test/100.npz', 'data/vrpltw/test/100.npz', 'data/vrptw/test/100.npz', 'data/cvrp/test/50.npz', 'data/vrptw/test/50.npz'] not found. Make sure to provide a file in the right path first or unset test_file to generate data automatically instead
+No solution file found at data/cvrp/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/einops/einops.py", line 531, in reduce
+    recipe = _prepare_transformation_recipe(pattern, reduction, axes_names=tuple(axes_lengths), ndim=len(shape))
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/einops/einops.py", line 366, in _prepare_transformation_recipe
+    raise EinopsError(f"Wrong shape: expected {len(left.composition)} dims. Received {ndim}-dim tensor.")
+einops.EinopsError: Wrong shape: expected 3 dims. Received 4-dim tensor.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/eval.py", line 175, in <module>
+    main()
+  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/eval.py", line 157, in main
+    o = test(policy, td_batch, env, device=device)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/eval.py", line 63, in test
+    out = policy(td, env, phase="test", num_starts=n_start, return_actions=True)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/models/common/constructive/base.py", line 258, in forward
+    logits, mask = self.decoder(td, hidden, num_starts)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/models/zoo/am/decoder.py", line 309, in forward
+    logits = rearrange(logits, "b s l -> (s b) l", s=num_starts)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/einops/einops.py", line 600, in rearrange
+    return reduce(tensor, pattern, reduction="rearrange", **axes_lengths)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/einops/einops.py", line 542, in reduce
+    raise EinopsError(message + "\n {}".format(e))
+einops.EinopsError:  Error while processing rearrange-reduction pattern "b s l -> (s b) l".
+ Input tensor shape: torch.Size([80, 80, 100, 101]). Additional info: {'s': 100}.
+ Wrong shape: expected 3 dims. Received 4-dim tensor.

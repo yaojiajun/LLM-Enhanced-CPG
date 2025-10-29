@@ -1,0 +1,16 @@
+```python
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    heuristic_scores = current_distance_matrix + torch.rand_like(current_distance_matrix) * 0.1 - 0.05
+    
+    # Introduce enhanced randomness for diversity to avoid local optima
+    heuristic_scores += torch.randn_like(current_distance_matrix) * 0.05
+    
+    # Add more sophisticated scoring based on constraints and historical data
+    heuristic_scores -= (current_load + current_load_open) * 0.02
+    heuristic_scores -= (time_windows[:, 1] - arrival_times.max(dim=0)[0]) * 0.01
+    heuristic_scores += pickup_node_demands * 0.03
+    heuristic_scores -= current_length * 0.04
+
+    return heuristic_scores
+```

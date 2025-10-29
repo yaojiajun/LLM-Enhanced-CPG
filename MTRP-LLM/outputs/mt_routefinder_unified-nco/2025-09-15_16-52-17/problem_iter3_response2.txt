@@ -1,0 +1,33 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Calculate available capacity
+    available_capacity = current_load.unsqueeze(1) - delivery_node_demands.unsqueeze(0)
+
+    # Create validity masks for delivery and pickup
+    valid_delivery_mask = (available_capacity >= 0)
+    valid_pickup_mask = (current_load_open.unsqueeze(1) + pickup_node_demands.unsqueeze(0) <= delivery_node_demands.sum())
+
+    # Calculate waiting times for each node
+    waiting_times = torch.where(arrival_times < time_windows[:, 0].unsqueeze(0), 
+                                 time_windows[:, 0].unsqueeze(0) - arrival_times, 
+                                 torch.tensor(0.0, device=current_distance_matrix.device))
+
+    # Normalize distance matrix
+    normalized_distance = current_distance_matrix / (current_distance_matrix.sum(dim=1, keepdim=True) + 1e-10)
+
+    # Calculate heuristic scores based on distance, valid deliveries, pickups and waiting times
+    heuristic_scores = (normalized_distance * valid_delivery_mask.float() * valid_pickup_mask.float()) - waiting_times
+
+    # Introducing adaptive penalties
+    penalty_factor = torch.exp(-0.1 * (current_load.sum() / current_load.size(0)))
+    heuristic_scores -= penalty_factor.unsqueeze(1) * (1 - valid_delivery_mask.float() * valid_pickup_mask.float())
+
+    # Enhance randomness to avoid local optima
+    randomness = torch.rand_like(heuristic_scores) * 0.05
+    heuristic_scores += randomness
+
+    return heuristic_scores
+```

@@ -1,0 +1,24 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Calculate load violation (positive value for nodes exceeding capacity)
+    load_violation = torch.max(delivery_node_demands - current_load, torch.tensor(0.))
+    
+    # Calculate time window violation (positive value for nodes violating the time window)
+    earliest_times = time_windows[:, 0]
+    latest_times = time_windows[:, 1]
+    time_window_violation = torch.maximum(torch.maximum(0, arrival_times - latest_times), torch.maximum(0, earliest_times - arrival_times))
+    
+    # Calculate length violation (positive value if visiting a node exceeds route length constraint)
+    length_violation = torch.max(torch.tensor(0.), current_length - current_distance_matrix.sum(dim=1))
+    
+    # Heuristic score combining load, time window, and length violations (with enhanced randomness)
+    heuristic_score = 0.5 * load_violation - 0.3 * time_window_violation + 0.7 * length_violation
+    heuristic_score += torch.rand(heuristic_score.size())  # Introduce enhanced randomness
+    
+    return F.softmax(heuristic_score, dim=1)
+
+```

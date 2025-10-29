@@ -1,0 +1,21 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Calculate individual heuristics ratios
+    distance_heuristic = 1.0 / (current_distance_matrix + 1e-8)  # Adding small epsilon for numerical stability
+    load_ratio_heuristic = 1.0 / (current_load + 1e-8)
+    delivery_score = torch.log((delivery_node_demands + 1) / (current_load + 1e-8))  # Modify delivery score calculation
+    pickup_score = torch.log((pickup_node_demands + 1) / (current_load + 1e-8))  # Modify pickup score calculation
+
+    # Combine heuristics using weighted sum
+    total_score = 0.3 * distance_heuristic + 0.3 * load_ratio_heuristic + 0.2 * delivery_score + 0.2 * pickup_score
+
+    # Mask invalid values to ensure finite bounds
+    total_score = torch.where(torch.isinf(total_score) | torch.isnan(total_score), torch.zeros_like(total_score), total_score)
+
+    return total_score
+
+```

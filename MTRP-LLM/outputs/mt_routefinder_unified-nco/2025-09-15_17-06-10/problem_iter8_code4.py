@@ -1,0 +1,26 @@
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Adaptive stochastic weights for enhanced exploration
+    rand_weights1 = torch.rand_like(current_distance_matrix) * 2 - 1
+    rand_weights2 = torch.rand_like(current_distance_matrix) * 0.5
+    rand_weights3 = torch.rand_like(current_distance_matrix) * 1.5
+    
+    # Normalization of the distance matrix
+    max_distance = torch.max(current_distance_matrix)
+    normalized_distance = current_distance_matrix / max_distance if max_distance > 0 else current_distance_matrix
+
+    # Nonlinear transformations combining depth and diversity
+    score1 = torch.sigmoid(normalized_distance) * rand_weights1
+    score2 = torch.relu(torch.cos(current_distance_matrix)) + rand_weights2
+    score3 = torch.tanh(torch.exp(-normalized_distance)) * rand_weights3
+    score4 = torch.sigmoid(current_load.unsqueeze(-1) / delivery_node_demands.unsqueeze(0)) * rand_weights1
+    score5 = torch.exp(-arrival_times) * rand_weights2
+
+    # Aggregate scores with a weighted combination for richer exploration
+    heuristic_scores = score1 - score2 + score3 + score4 - score5
+
+    # Ensure the scores are within reasonable bounds
+    heuristic_scores = torch.clamp(heuristic_scores, min=-1.0, max=1.0)
+
+    return heuristic_scores

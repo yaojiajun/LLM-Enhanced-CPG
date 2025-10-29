@@ -1,0 +1,37 @@
+import torch
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Load capacity check: compute feasible deliveries
+    load_check = ((current_load.unsqueeze(1) - delivery_node_demands.unsqueeze(0)) >= 0).float()
+    
+    # Open route capacity check for demands
+    load_open_check = ((current_load_open.unsqueeze(1) - delivery_node_demands_open.unsqueeze(0)) >= 0).float()
+    
+    # Time window feasibility
+    time_check = ((arrival_times.unsqueeze(1) <= time_windows[:, 1].unsqueeze(0)) & 
+                   (arrival_times.unsqueeze(1) >= time_windows[:, 0].unsqueeze(0))).float()
+    
+    # Route length check
+    length_check = (current_length.unsqueeze(1) - current_distance_matrix >= 0).float()
+    
+    # Aggregate the checks: it must be possible to deliver within the defined constraints 
+    feasibility_score = load_check * load_open_check * time_check * length_check
+    
+    # Calculate a heuristic score matrix 
+    heuristic_scores = -current_distance_matrix * feasibility_score
+    
+    # Introduce enhanced randomness to occasional entailed unreliabilities and avoid local minima
+    randomness_factor = torch.rand_like(heuristic_scores) * 0.1
+    heuristic_scores += randomness_factor
+
+    return heuristic_scores

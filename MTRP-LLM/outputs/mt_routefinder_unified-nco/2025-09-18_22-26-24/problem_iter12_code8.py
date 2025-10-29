@@ -1,0 +1,34 @@
+import torch
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Initialize heuristic indicators with uniform random values
+    heuristic_indicators = torch.rand_like(current_distance_matrix)
+
+    # Calculate penalties for exceeding load capacity
+    load_penalty = (delivery_node_demands.unsqueeze(0) > current_load.unsqueeze(1)).float() * -1000  # Severe penalty if demand exceeds capacity
+    heuristic_indicators += load_penalty
+    
+    # Calculate penalties for exceeding length constraints
+    length_penalty = (current_distance_matrix > current_length.unsqueeze(1)).float() * -1000  # Severe penalty if route length exceeds budget
+    heuristic_indicators += length_penalty
+
+    # Time window feasibility checks
+    current_time = arrival_times + current_distance_matrix  # Estimate new arrival times
+    time_window_penalty = ((current_time < time_windows[:, 0].unsqueeze(0)) | 
+                            (current_time > time_windows[:, 1].unsqueeze(0))).float() * -500  # Penalty if outside time windows
+    heuristic_indicators += time_window_penalty
+
+    # Calculate scores based on distance and remaining load
+    distance_score = -current_distance_matrix / (current_load.unsqueeze(1) + 1e-6)  # Minimize distance, factor in load
+    heuristic_indicators += distance_score
+
+    # Add randomness to enhance exploration
+    noise = torch.randn_like(heuristic_indicators) * 0.1  # Enhanced randomness
+    heuristic_indicators += noise
+
+    # Normalize scores to keep them within a manageable range
+    heuristic_indicators = (heuristic_indicators - heuristic_indicators.min()) / (heuristic_indicators.max() - heuristic_indicators.min() + 1e-6)
+
+    return heuristic_indicators

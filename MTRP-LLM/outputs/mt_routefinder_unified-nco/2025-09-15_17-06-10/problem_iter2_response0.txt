@@ -1,0 +1,29 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Normalize inputs for better convergence
+    normalized_distance = F.normalize(current_distance_matrix, p=2, dim=1)
+    normalized_demand = F.normalize(delivery_node_demands.view(-1, 1), p=2, dim=0)
+    normalized_load = F.normalize(current_load.view(-1, 1), p=2, dim=0)
+    normalized_time_windows = F.normalize(time_windows, p=2, dim=1)
+    normalized_arrival_times = F.normalize(arrival_times, p=2, dim=1)
+    normalized_pickup_demand = F.normalize(pickup_node_demands.view(-1, 1), p=2, dim=0)
+    normalized_length = F.normalize(current_length.view(-1, 1), p=2, dim=0)
+
+    # Combine different indicators using diverse activation functions
+    score1 = torch.sigmoid(normalized_distance)
+    score2 = F.relu(torch.sin(normalized_demand))
+    score3 = torch.tanh(normalized_load)
+    score4 = torch.sigmoid(normalized_time_windows)
+    score5 = F.relu(torch.cos(normalized_arrival_times))
+    score6 = F.hardsigmoid(normalized_pickup_demand)
+    score7 = torch.sigmoid(normalized_length)
+
+    # Weighted combination of different scores
+    heuristic_scores = 0.2 * score1 + 0.1 * score2 + 0.15 * score3 + 0.1 * score4 + 0.1 * score5 + 0.15 * score6 + 0.2 * score7
+
+    return heuristic_scores
+```

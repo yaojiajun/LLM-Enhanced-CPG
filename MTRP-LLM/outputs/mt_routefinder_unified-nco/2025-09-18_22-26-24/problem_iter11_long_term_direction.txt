@@ -1,0 +1,5 @@
+1. Integrate adaptive noise to heuristic indicators for dynamic response for constraints.
+2. Prioritize problem-specific factors’ interactions to enhance routing.
+3. Employ diverse heuristic strategies selectively, promoting exploration in solution space.
+4. Utilize penalty adjustments for time windows and capacity limits.
+5. Continuously refine weights to balance exploration-exploitation effectively.

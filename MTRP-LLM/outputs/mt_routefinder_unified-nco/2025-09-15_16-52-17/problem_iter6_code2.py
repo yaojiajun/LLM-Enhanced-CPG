@@ -1,0 +1,10 @@
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    random_scores = torch.rand_like(current_distance_matrix)
+    penalty_scores_1 = torch.rand_like(current_distance_matrix) * 0.1  # Introduce penalty based on randomness
+    penalty_scores_2 = torch.rand_like(current_distance_matrix) * 0.05  # Another penalty mechanism
+    penalty_scores_3 = torch.rand_like(current_distance_matrix) * 0.03  # Additional penalty factor
+    heuristic_scores = random_scores - penalty_scores_1 + penalty_scores_2 + penalty_scores_3
+
+    return heuristic_scores

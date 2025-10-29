@@ -1,0 +1,9 @@
+problem_name: mt_pomo_o1
+problem_type: nco
+obj_type: min
+problem_size: 100 # problem size for training
+func_name: heuristics
+description: |
+I need assistance in designing a new heuristic to improve the solution of the Open Vehicle Routing Problem (OVRP) by incorporating insights from prior heuristics. The OVRP requires finding a set of optimal routes for a fleet of vehicles to serve all given customers without necessarily returning to the depot. This problem is defined by one primary constraint: each customer has a demand, and the total demand of the customers served by a single vehicle cannot exceed its capacity. The objective is to minimize the total travel distance or time while adhering to the capacity constraint.
+pro: Open Vehicle Routing Problem (OVRP)
+alg: Neural Combinatorial Optimization

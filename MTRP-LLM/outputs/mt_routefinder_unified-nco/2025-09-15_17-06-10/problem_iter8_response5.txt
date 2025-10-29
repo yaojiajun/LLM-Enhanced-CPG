@@ -1,0 +1,22 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    rand_weights = torch.rand_like(current_distance_matrix)
+
+    # Normalize distances with potential addition to promote exploration
+    max_distance = torch.max(current_distance_matrix)
+    normalized_distance = current_distance_matrix / max_distance + 0.1 * rand_weights
+
+    # Non-linear transformations for varied scoring
+    score1 = torch.tanh(normalized_distance) * torch.sigmoid(current_load.view(-1, 1) - delivery_node_demands.view(1, -1))
+    score2 = torch.relu(torch.exp(normalized_distance) - 1) + rand_weights
+
+    # Introducing time windows penalties
+    time_window_penalty = torch.where((arrival_times < time_windows[:, 0].view(1, -1)) | (arrival_times > time_windows[:, 1].view(1, -1)), torch.tensor(-float('inf')).to(current_distance_matrix.device), torch.tensor(0.0).to(current_distance_matrix.device))
+
+    # Adaptive scoring combining the various scores
+    heuristic_scores = score1 - score2 + time_window_penalty
+
+    return heuristic_scores
+```

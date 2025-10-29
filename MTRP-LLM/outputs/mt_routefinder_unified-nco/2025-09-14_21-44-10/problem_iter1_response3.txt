@@ -1,0 +1,36 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Initialize heuristic score matrix
+    num_routes, num_nodes = current_distance_matrix.shape
+    heuristic_scores = torch.zeros((num_routes, num_nodes), device=current_distance_matrix.device)
+
+    # Capacity checks
+    feasible_deliveries = (current_load[:, None] >= delivery_node_demands[None, :]) * (current_load[:, None] >= delivery_node_demands_open[None, :])
+    feasible_pickups = (current_load_open[:, None] >= pickup_node_demands[None, :])
+    
+    # Time window checks
+    time_windows_check = (arrival_times[:, None] + current_distance_matrix < time_windows[:, 1][None, :]) * (arrival_times[:, None] + current_distance_matrix >= time_windows[:, 0][None, :])
+
+    # Duration check
+    duration_check = (current_length[:, None] >= current_distance_matrix)
+
+    # Combine checks
+    feasibility_matrix = feasible_deliveries & feasible_pickups & time_windows_check & duration_check
+
+    # Calculate base scores from distance (longer edges attract negative scores)
+    base_scores = -current_distance_matrix
+
+    # Select promising edges that meet all feasibility constraints
+    heuristic_scores = torch.where(feasibility_matrix, base_scores, torch.tensor(float('-inf'), device=current_distance_matrix.device))
+
+    # Introduce randomness for exploration
+    random_scores = torch.rand((num_routes, num_nodes), device=current_distance_matrix.device) * 0.1
+    heuristic_scores += random_scores
+
+    # Normalize scores for manageability
+    heuristic_scores = (heuristic_scores - heuristic_scores.min(dim=1, keepdim=True).values) / (heuristic_scores.max(dim=1, keepdim=True).values - heuristic_scores.min(dim=1, keepdim=True).values + 1e-6)
+
+    return heuristic_scores
+```

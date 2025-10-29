@@ -1,0 +1,9 @@
+import torch
+import torch
+
+def heuristics_v2(current_distance_matrix, delivery_node_demands, current_load, delivery_node_demands_open, current_load_open, time_windows, arrival_times, pickup_node_demands, current_length):
+    # Combine distance matrix with a small random noise to introduce randomness
+    noise = torch.rand_like(current_distance_matrix) * 0.01
+    heuristic_scores = current_distance_matrix + noise
+    
+    return heuristic_scores

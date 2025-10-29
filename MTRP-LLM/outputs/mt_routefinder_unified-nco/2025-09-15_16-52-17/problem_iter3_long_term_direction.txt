@@ -1,0 +1,1 @@
+Incorporate adaptive penalty mechanisms to dynamically adjust based on solution feasibility. Leverage historical edge data for informed selection, balanced with strategic randomness. Use efficient vectorization for computation and enhance diversity through fine-tuned perturbations that respect capacity and time constraints for exploration and exploitation balance.

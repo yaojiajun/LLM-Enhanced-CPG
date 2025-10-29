@@ -1,0 +1,48 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Initialize the heuristic score matrix
+    pomo_size, num_nodes = current_distance_matrix.shape
+    heuristic_scores = torch.zeros(pomo_size, num_nodes, device=current_distance_matrix.device)
+
+    # Capacity constraints for deliveries
+    delivery_capacity_met = (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0))
+    delivery_feasible = delivery_capacity_met & (current_load_open.unsqueeze(1) >= delivery_node_demands_open.unsqueeze(0))
+    
+    # Time window constraints
+    earliest_service_time = arrival_times + current_distance_matrix
+    time_window_valid = (earliest_service_time >= time_windows[:, 0].unsqueeze(0)) & \
+                        (earliest_service_time <= time_windows[:, 1].unsqueeze(0))
+    
+    # Length constraint result (normalized by max length for scoring purposes)
+    length_constraint_met = (current_distance_matrix <= current_length.unsqueeze(1)).float()
+
+    # Aggregate all conditions to compute overall feasibility
+    feasibility_mask = delivery_feasible & time_window_valid & length_constraint_met.bool()
+
+    # Calculate heuristic scores considering feasible routes and some randomness
+    pref_distance = torch.where(feasibility_mask, 
+                                -current_distance_matrix,  # penalize longer paths
+                                torch.tensor(float('inf'), device=current_distance_matrix.device))
+
+    heuristic_scores = pref_distance.masked_fill(~feasibility_mask, float('inf'))
+
+    # Incorporate randomness to avoid local optima
+    random_noise = torch.randn_like(heuristic_scores) * 1e-2
+    heuristic_scores += random_noise
+
+    # Normalize the heuristic scores to a manageable range
+    heuristic_scores = (heuristic_scores - heuristic_scores.min()) / (heuristic_scores.max() - heuristic_scores.min())
+    
+    return heuristic_scores
+```

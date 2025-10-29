@@ -1,0 +1,9 @@
+import torch
+def heuristics_v2(current_distance_matrix, delivery_node_demands, current_load, delivery_node_demands_open, current_load_open, time_windows, arrival_times, pickup_node_demands, current_length):
+    noise = torch.randn_like(current_distance_matrix) * 0.1  # Adding noise to the heuristic indicators
+    heuristic_indicators = torch.rand_like(current_distance_matrix) + noise  # Random heuristic indicators with noise
+
+    # Implement advanced heuristic computation with problem-specific factors, advanced logic, and adjusted randomness
+    # Your advanced heuristic strategies implementation here
+
+    return heuristic_indicators

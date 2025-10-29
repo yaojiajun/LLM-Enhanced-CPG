@@ -1,0 +1,40 @@
+1:def heuristics_v2(cvrp_scores: torch.Tensor, pickup_node_demands: torch.Tensor) -> torch.Tensor:
+
+    # Extracting linehaul and backhaul demands for analysis
+    linehaul_demands = pickup_node_demands[:-1]
+    backhaul_demands = pickup_node_demands[1:]
+
+    # Calculate demand trends with a modified scoring adjustment to account for real-time demand
+    demand_trend_score = backhaul_demands - linehaul_demands
+    adaptive_demand_adjustment = 0.5 * torch.cat((demand_trend_score.unsqueeze(0), torch.zeros(1, 1, device=cvrp_scores.device)), dim=1)
+
+    # Integrate the adjusted demand trend into the heuristic scores while emphasizing flexibility
+    adjusted_scores = cvrp_scores + adaptive_demand_adjustment
+
+    # Introduce a dynamic vehicle capacity penalty based on cumulative pickup demands
+    capacity_penalty_factor = 0.8
+    cumulative_pickup_demand = torch.cumsum(pickup_node_demands.view(1, -1), dim=1)
+    capacity_penalty = -capacity_penalty_factor * torch.clamp(cumulative_pickup_demand - cvrp_scores, min=0)
+
+    adjusted_scores += capacity_penalty
+
+    # Enforce stronger penalties for backhaul nodes not conforming to sequencing requirements
+    sequencing_penalty = -3.0 * torch.cat((torch.zeros(cvrp_scores.shape[0], 1, device=cvrp_scores.device),
+                                            cvrp_scores[:, 1:]), dim=1)
+
+    adjusted_scores += sequencing_penalty
+
+    # Refine scoring based on more nuanced demands and cumulative impacts
+    nuanced_demand_metric = 0.25 * torch.abs(pickup_node_demands.view(1, -1))
+    adjusted_scores -= nuanced_demand_metric
+
+    # Incorporate predictive scoring adjustments based on historical performance metrics
+    historical_performance = torch.mean(cvrp_scores, dim=1, keepdim=True)
+    adjusted_scores += historical_performance * 0.15
+
+    # Refine exploration-exploitation threshold dynamically based on heuristic distance
+    exploration_exploitation_adjustment = 0.4
+    threshold_mean = torch.mean(adjusted_scores, dim=1, keepdim=True) + exploration_exploitation_adjustment
+    adjusted_scores -= torch.clamp(adjusted_scores - threshold_mean, min=0)
+
+    return adjusted_scores

@@ -1,0 +1,21 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Implementing enhanced heuristics logic with adaptive scaling, diverse penalties, and problem-specific insights
+    random_scores = torch.rand_like(current_distance_matrix)
+    distance_mean = current_distance_matrix.mean(1, keepdim=True)
+    distance_std = current_distance_matrix.std(1, keepdim=True)
+    adaptive_scaling = distance_mean / distance_std
+
+    penalty_scores = torch.rand_like(current_distance_matrix) * 0.1  # Introducing penalty based on randomness
+    penalty_based_on_distance = current_distance_matrix * 0.05  # Additional penalty based on distances
+    penalty_based_on_load = current_load * 0.02  # Penalty based on current load
+    penalty_based_on_time_windows = (time_windows[:, 1] - arrival_times) * 0.03  # Penalty based on time windows
+    penalty_based_on_length = current_length * 0.04  # Penalty based on route length
+
+    heuristic_scores = random_scores * adaptive_scaling - penalty_scores - penalty_based_on_distance - penalty_based_on_load - penalty_based_on_time_windows - penalty_based_on_length
+
+    return heuristic_scores
+```

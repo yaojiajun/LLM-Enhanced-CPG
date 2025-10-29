@@ -1,0 +1,49 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Initialize heuristic score matrix
+    pomo_size, num_nodes = current_distance_matrix.shape
+    heuristic_scores = torch.zeros((pomo_size, num_nodes), device=current_distance_matrix.device)
+    
+    # Factor 1: Penalty for exceeding load capacity
+    capacity_penalty = (deliveries_available := (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0))) * 1.0
+    capacity_factor = (1 - deliveries_available.float()) * -10.0  # strong penalty for overcapacity
+    heuristic_scores += capacity_factor
+    
+    # Factor 2: Reward for fulfilling delivery demand
+    delivery_fulfillable = deliveries_available * (delivery_node_demands.unsqueeze(0) > 0)
+    delivery_reward = delivery_fulfillable.float() * (100 - current_distance_matrix)  # maximize reliability
+    heuristic_scores += delivery_reward
+    
+    # Factor 3: Penalty for time window violations
+    current_time = arrival_times.unsqueeze(1) + current_distance_matrix
+    within_time_windows = (time_windows[:, 0].unsqueeze(0) <= current_time) & (current_time <= time_windows[:, 1].unsqueeze(0))
+    time_penalty = (1 - within_time_windows.float()) * -8.0  # moderate penalty for time violations
+    heuristic_scores += time_penalty
+    
+    # Factor 4: Consideration for pickup demands
+    pickup_possible = (current_load_open.unsqueeze(1) >= pickup_node_demands.unsqueeze(0)) & (pickup_node_demands.unsqueeze(0) > 0)
+    pickup_reward = pickup_possible.float() * (50 - current_distance_matrix) # medium reward for possible pickups
+    heuristic_scores += pickup_reward
+    
+    # Factor 5: Keeping within route duration limits
+    route_duration_ok = (current_length.unsqueeze(1) >= current_distance_matrix)
+    length_penalty = (1 - route_duration_ok.float()) * -5.0  # low penalty for duration breaches
+    heuristic_scores += length_penalty
+    
+    # Randomization factor to prevent convergence to local optima
+    randomness = torch.randn_like(heuristic_scores, device=heuristic_scores.device) * 5.0
+    heuristic_scores += randomness
+    
+    return heuristic_scores
+```

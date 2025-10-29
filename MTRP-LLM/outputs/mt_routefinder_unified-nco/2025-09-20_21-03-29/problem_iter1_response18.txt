@@ -1,0 +1,14 @@
+```python
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Modified heuristic score calculation for current_distance_matrix, delivery_node_demands, and current_load
+    distance_heuristic = 1.0 / (current_distance_matrix + 1e-8)  # Modified distance heuristic
+    delivery_score = torch.clamp(1.0 / (delivery_node_demands + 1e-8), min=0, max=2)  # Modified delivery score handling infeasible demands
+    load_ratio = torch.clamp(current_load / (delivery_node_demands + 1e-8), min=-2, max=2)  # Modified load ratio with clamping
+
+    # Integration into total heuristic score
+    total_score = distance_heuristic + 0.5 * delivery_score + 0.5 * load_ratio
+    
+    return total_score
+```

@@ -1,0 +1,18 @@
+The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated.
+Inputs
+
+current_distance_matrix: Tensor (pomo_size, N+1), distance from the current node to all other nodes.
+
+delivery_node_demands: Tensor (N+1), delivery demand at each node. Used to check if the vehicle has sufficient remaining load to deliver.
+
+current_load: Tensor (pomo_size), remaining capacity of the vehicle at each trajectory.
+
+Outputs
+
+Returns a heuristic score matrix of shape (pomo_size, N+1), assigning positive scores to promising edges and negative scores to infeasible ones.
+
+Implementation Requirements
+
+Fully vectorized implementation optimized for GPU execution.
+Efficient batch evaluation under the POMO framework.
+Introduce controlled randomness in scoring to avoid premature convergence to local optima.

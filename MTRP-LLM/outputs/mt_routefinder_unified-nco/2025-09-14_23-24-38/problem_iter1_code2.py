@@ -1,0 +1,9 @@
+import torch
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Example of heuristics computation (replace with actual implementation)
+    heuristic_scores = torch.rand(current_distance_matrix.shape)  # Placeholder for actual heuristic computation
+    
+    return heuristic_scores

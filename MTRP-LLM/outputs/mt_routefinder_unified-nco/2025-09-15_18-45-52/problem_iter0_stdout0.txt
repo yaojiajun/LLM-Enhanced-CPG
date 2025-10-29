@@ -1,0 +1,41 @@
+/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/lightning/pytorch/utilities/parsing.py:210: Attribute 'env' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['env'])`.
+/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/lightning/pytorch/utilities/parsing.py:210: Attribute 'policy' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['policy'])`.
+Traceback (most recent call last):
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/tensordict/_td.py", line 2706, in _get_str
+    return self._tensordict[key]
+KeyError: 'action'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/eval.py", line 186, in <module>
+    main()
+  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/eval.py", line 169, in main
+    o = test(policy, td_batch, env, device=device)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/eval.py", line 63, in test
+    out = policy(td, env, phase="test", num_starts=n_start, return_actions=True)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/models/common/constructive/base.py", line 222, in forward
+    td, env, num_starts = decode_strategy.pre_decoder_hook(td, env)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/utils/decoding.py", line 319, in pre_decoder_hook
+    td = env.step(td)["next"]
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/envs/common/base.py", line 129, in step
+    td = self._step(td)
+  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/routefinder/envs/mtvrp/env.py", line 131, in _step
+    prev_node, curr_node = td["current_node"], td["action"]
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/tensordict/base.py", line 574, in __getitem__
+    return self._get_tuple_maybe_non_tensor(idx_unravel, NO_DEFAULT)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/tensordict/base.py", line 6563, in _get_tuple_maybe_non_tensor
+    result = self._get_tuple(key, default, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/tensordict/_td.py", line 2711, in _get_tuple
+    first = self._get_str(key[0], default, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/tensordict/_td.py", line 2708, in _get_str
+    return self._default_get(key, default)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/tensordict/base.py", line 6500, in _default_get
+    raise KeyError(
+KeyError: 'key "action" not found in TensorDict with keys [\'action_mask\', \'actions_bks\', \'backhaul_class\', \'capacity_original\', \'costs_bks\', \'current_node\', \'current_route_length\', \'current_time\', \'demand_backhaul\', \'demand_linehaul\', \'distance_limit\', \'done\', \'locs\', \'num_depots\', \'open_route\', \'service_time\', \'speed\', \'terminated\', \'time_windows\', \'used_capacity_backhaul\', \'used_capacity_linehaul\', \'vehicle_capacity\', \'visited\']'

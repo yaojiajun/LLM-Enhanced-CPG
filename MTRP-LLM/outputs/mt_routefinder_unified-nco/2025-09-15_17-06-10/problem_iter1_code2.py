@@ -1,0 +1,18 @@
+import torch
+import numpy as np
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Normalize the input matrices to be in the range [0, 1]
+    normalized_distance_matrix = F.normalize(current_distance_matrix, p=2, dim=-1)
+    normalized_delivery_node_demands = F.normalize(delivery_node_demands, p=1, dim=0)
+    normalized_current_load = F.normalize(current_load, p=1, dim=0)
+    normalized_pickup_node_demands = F.normalize(pickup_node_demands, p=1, dim=0)
+    normalized_current_length = F.normalize(current_length, p=1, dim=0)
+    
+    # Combine and perform element-wise operations to create the heuristic score matrix
+    heuristic_scores = 2*normalized_distance_matrix - normalized_delivery_node_demands.unsqueeze(0) + 0.5*normalized_current_load.unsqueeze(1) - 1.5*normalized_pickup_node_demands.unsqueeze(0) + normalized_current_length.unsqueeze(1)
+    
+    return heuristic_scores

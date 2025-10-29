@@ -1,0 +1,23 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # cvrp_scores
+    # Introduce a modified distance-based heuristic score with different weighting and noise level
+    normalized_distance_scores = -current_distance_matrix / (torch.max(current_distance_matrix) * 0.8) + torch.randn_like(
+        current_distance_matrix) * 0.5
+
+    # Introduce changes in demand-based score calculations with altered emphasis and randomness
+    demand_scores = (delivery_node_demands.unsqueeze(0) - current_load.unsqueeze(1)) * 0.7 + torch.max(
+        delivery_node_demands) / 3 + torch.randn_like(current_distance_matrix) * 0.8
+
+    # Enhance noise level for exploration diversification
+    enhanced_noise = torch.randn_like(current_distance_matrix) * 1.8
+
+    # Combine modified heuristic scores with diversified strategies
+    cvrp_scores = normalized_distance_scores + demand_scores + enhanced_noise
+
+    # Keep the remaining parts unchanged from the original function
+
+    return cvrp_scores
+```

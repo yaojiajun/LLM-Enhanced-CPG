@@ -1,0 +1,21 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, 
+                   delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, 
+                   arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Normalize input data
+    norm_distance = F.normalize(current_distance_matrix)
+    norm_load = F.normalize(current_load)
+    norm_load_open = F.normalize(current_load_open)
+    norm_length = F.normalize(current_length)
+
+    # Compute heuristic scores using diverse heuristics and non-linear activation functions
+    score1 = torch.sigmoid(norm_distance) * torch.relu(norm_load)
+    score2 = torch.tanh(norm_length) + torch.sigmoid(norm_load_open)
+    heuristic_scores = score1 + score2
+
+    return heuristic_scores
+```

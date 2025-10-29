@@ -1,0 +1,1 @@
+Utilize non-linear transformations for balanced diversity in distance and demand scoring, fine-tune weight distributions, adjust scoring functions for efficient exploration, and incorporate nuanced randomness control for improved heuristic guidance in Unified VRP.

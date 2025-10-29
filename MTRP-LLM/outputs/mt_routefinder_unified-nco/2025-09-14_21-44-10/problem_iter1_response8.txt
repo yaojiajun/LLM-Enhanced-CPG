@@ -1,0 +1,49 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+
+    # Heuristic indicators initialization
+    heuristic_scores = torch.zeros_like(current_distance_matrix)
+
+    # Identify constraints: total capacity, possible time window adherence, and remaining travel duration
+    vehicle_capacity = current_load.unsqueeze(1).expand_as(current_distance_matrix)  # Capacity per trajectory
+    vehicle_load_after_delivery = vehicle_capacity - delivery_node_demands.unsqueeze(0)  # Load after deliveries
+    valid_deliveries = vehicle_load_after_delivery >= 0  # Check if demands can be delivered
+
+    # Time window feasibility: considering the paid waiting time at each node
+    start_time = arrival_times + current_distance_matrix  # Estimated start time at each neighboring node
+    time_window_validity = (start_time >= time_windows[:, 0].unsqueeze(0)) & (start_time <= time_windows[:, 1].unsqueeze(0))
+
+    # Remaining travel duration constraint verification
+    feasible_length = current_length.unsqueeze(1) >= current_distance_matrix  # Verify if routes fit within max duration
+
+    # Calculate heuristic scores based on the combined validity of loads, time windows, and travel lengths
+    heuristic_scores += (valid_deliveries.float() * time_window_validity.float() * feasible_length.float())
+    
+    # Integrate penalties for exceeding potentials into scoring
+    duration_excess_penalty = current_length.unsqueeze(1) < current_distance_matrix
+    heuristic_scores[duration_excess_penalty] -= 1  # Apply penalty for exceeding route duration
+
+    # Backhaul consideration (if included in this heuristic)
+    remaining_load_backhaul = current_load.unsqueeze(1) + pickup_node_demands.unsqueeze(0)
+    valid_backhauls = remaining_load_backhaul >= 0
+    heuristic_scores[valid_backhauls] += 0.5  # Boost penalty score for valid backhaul options
+
+    # Introduce randomness to push against local optima trapping
+    randomness_scaler = 0.05 * torch.randn_like(heuristic_scores)
+    heuristic_scores += randomness_scaler
+
+    # Normalizing scores to ensure action effectiveness
+    heuristic_scores = torch.clamp(heuristic_scores, min=-1, max=2)  # Normalize scores within a fixed interval
+
+    return heuristic_scores
+```

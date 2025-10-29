@@ -1,0 +1,17 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Calculate heuristic score based on a combination of factors such as distance, load capacity, time window, and duration limits
+    score_distance = -current_distance_matrix  # Assign negative scores based on distance to encourage shorter routes
+    score_load = torch.where(current_load - delivery_node_demands < 0, torch.full_like(current_load, -1e6), torch.full_like(current_load, 0))  # Penalize nodes that exceed load capacity
+    score_load_open = torch.where(current_load_open - delivery_node_demands_open < 0, torch.full_like(current_load_open, -1e6), torch.full_like(current_load_open, 0))  # Penalize nodes that exceed open load capacity
+    score_time_windows = torch.where(((arrival_times < time_windows[:, 0]) | (arrival_times > time_windows[:, 1])).unsqueeze(0).T, torch.full_like(arrival_times, -1e6), torch.full_like(arrival_times, 0))  # Penalize nodes outside of time windows
+    score_pickup = torch.where((current_load + pickup_node_demands > capacity_threshold), torch.full_like(pickup_node_demands, -1e6), torch.full_like(pickup_node_demands, 0))  # Penalize nodes that exceed total capacity after pickups
+    score_length = torch.where(current_length < 0, torch.full_like(current_length, -1e6), torch.full_like(current_length, 0))  # Penalize nodes that exceed route duration limits
+    
+    heuristic_scores = score_distance + score_load + score_load_open + score_time_windows + score_pickup + score_length
+    return heuristic_scores
+
+```

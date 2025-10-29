@@ -1,0 +1,37 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor,
+                  delivery_node_demands: torch.Tensor,
+                  current_load: torch.Tensor,
+                  delivery_node_demands_open: torch.Tensor,
+                  current_load_open: torch.Tensor,
+                  time_windows: torch.Tensor,
+                  arrival_times: torch.Tensor,
+                  pickup_node_demands: torch.Tensor,
+                  current_length: torch.Tensor) -> torch.Tensor:
+
+    # Calculate basic feasibility indicators based on constraints
+    capacity_feasible = (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0))
+    duration_feasible = (current_length.unsqueeze(1) >= current_distance_matrix)
+    
+    # Compute time window feasibility
+    service_start_times = arrival_times.unsqueeze(1) + current_distance_matrix
+    time_window_violation = (service_start_times < time_windows[:, 0].unsqueeze(0)) | (service_start_times > time_windows[:, 1].unsqueeze(0))
+    
+    # Combine all feasibility indicators through logical AND
+    feasible_routes = capacity_feasible & duration_feasible & ~time_window_violation
+    
+    # Calculate a base score inversely related to the distance for feasible routes
+    base_scores = torch.where(feasible_routes, 1 / (current_distance_matrix + 1e-6), torch.tensor(float('-inf')).to(current_distance_matrix.device))
+    
+    # Introduce randomness to enhance exploration and avoid local optima
+    randomness = torch.rand_like(base_scores) * 0.1  # Adjust the scale of randomness if necessary
+    heuristic_scores = base_scores + randomness
+    
+    # Normalize the scores for more stable exploration
+    heuristic_scores = (heuristic_scores - heuristic_scores.min(dim=1, keepdim=True).values) / \
+                        (heuristic_scores.max(dim=1, keepdim=True).values - heuristic_scores.min(dim=1, keepdim=True).values + 1e-6)
+    
+    return heuristic_scores
+```

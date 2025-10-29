@@ -1,0 +1,224 @@
+1:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    max_distance = torch.max(current_distance_matrix)
+    max_demand = torch.max(delivery_node_demands)
+
+    normalized_distance_matrix = current_distance_matrix / max_distance
+    normalized_demand_matrix = delivery_node_demands / max_demand
+
+    distance_score = -1.4 * normalized_distance_matrix
+    demand_score = 2.3 * normalized_demand_matrix - 1.1 * torch.randn_like(current_distance_matrix)
+
+    load_constraints = (current_load[:, None] >= delivery_node_demands[None, :]).float()
+
+    heuristic_score_matrix = (demand_score + distance_score) * load_constraints
+
+    normal_adjustment = 1.7 * torch.tanh(heuristic_score_matrix) + 1.3 * torch.sigmoid(heuristic_score_matrix)
+    enhanced_heuristic_score_matrix = (1.6 * heuristic_score_matrix + 0.4 * normal_adjustment)
+
+    penalty_mask = (current_distance_matrix > max_distance * 0.75).float()
+    enhanced_heuristic_score_matrix -= 4.0 * penalty_mask * (1 - load_constraints)
+
+    # Introducing controlled randomness for efficient route planning
+    random_noise = 0.2 * torch.randn_like(current_distance_matrix)
+    enhanced_heuristic_score_matrix += torch.abs(random_noise) * load_constraints
+
+    return enhanced_heuristic_score_matrix
+
+2:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    normalized_distance_matrix = current_distance_matrix / torch.max(current_distance_matrix)
+    normalized_demand_matrix = delivery_node_demands / torch.max(delivery_node_demands)
+
+    demand_score = 1.7 * normalized_demand_matrix + 0.6 * torch.randn_like(current_distance_matrix)
+    distance_score = -2.0 * normalized_distance_matrix
+
+    noise_1 = 0.7 * torch.randn_like(current_distance_matrix) + 0.6 * torch.randn(current_distance_matrix.size())
+    noise_2 = 0.4 * torch.randn_like(current_distance_matrix) + 0.8 * torch.randn(current_distance_matrix.size())
+    noise_3 = 0.5 * torch.randn_like(current_distance_matrix) + 0.3 * torch.randn(current_distance_matrix.size())
+    impactful_mixture = 0.8 * distance_score + 0.9 * noise_1 + 0.6 * noise_2 + 0.4 * noise_3
+
+    load_constraints = (current_load[:, None] >= delivery_node_demands[None, :]).float()
+    heuristic_score_matrix = (demand_score + impactful_mixture) * load_constraints
+
+    self_refinement = 1.7 * torch.tanh(heuristic_score_matrix) + 1.4 * torch.sigmoid(heuristic_score_matrix)
+    refined_heuristic_score_matrix = heuristic_score_matrix + self_refinement
+
+    return refined_heuristic_score_matrix
+
+3:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    # Normalize the distance matrix and delivery demands
+    normalized_distance_matrix = current_distance_matrix / torch.max(current_distance_matrix)
+    normalized_demand_matrix = delivery_node_demands / torch.max(delivery_node_demands)
+
+    # Calculate base costs with normalized distance and demand, incorporating noise
+    demand_score = 2.0 * normalized_demand_matrix + 1.0 * torch.randn_like(current_distance_matrix)
+    distance_score = -1.5 * normalized_distance_matrix
+
+    # Apply load constraints efficiently
+    load_constraints = (current_load[:, None] >= delivery_node_demands[None, :]).float()
+    heuristic_score_matrix = (demand_score + distance_score) * load_constraints
+
+    # Introduce nonlinear transformations with balanced weightings for improved edge selection
+    nonlinear_adjustment = 2.3 * torch.tanh(heuristic_score_matrix) + 1.7 * torch.sigmoid(heuristic_score_matrix)
+    enhanced_heuristic_score_matrix = heuristic_score_matrix + nonlinear_adjustment
+
+    return enhanced_heuristic_score_matrix
+
+4:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    # Normalize the distance matrix
+    normalized_distance_matrix = current_distance_matrix / (torch.max(current_distance_matrix) + 1e-6)
+
+    # Normalize the delivery node demands
+    normalized_demand_matrix = delivery_node_demands / (torch.max(delivery_node_demands) + 1e-6)
+
+    # Calculate base costs for demand and distance with additional randomness
+    demand_score = 2.0 * normalized_demand_matrix + 1.0 * torch.randn_like(current_distance_matrix)
+    distance_score = -1.5 * normalized_distance_matrix + 0.5 * torch.randn_like(current_distance_matrix)
+
+    # Combine initial scores to create a preliminary heuristic score matrix
+    heuristic_score_matrix = demand_score + distance_score
+
+    # Implement a scaling factor based on the current load as a mask with noise for diversity
+    load_constraints = torch.where(current_load[:, None] >= delivery_node_demands[None, :], 1.0, 0.0)
+    load_constraints += 0.1 * torch.randn_like(load_constraints)
+    heuristic_score_matrix *= load_constraints.float()
+
+    # Use a more intricate adjustment with a combination of non-linear functions for exploration-exploitation trade-off
+    nonlinear_adjustment = 1.5 * torch.tanh(heuristic_score_matrix) + 0.8 * torch.sigmoid(heuristic_score_matrix)
+    enhanced_heuristic_score_matrix = heuristic_score_matrix + nonlinear_adjustment
+
+    return enhanced_heuristic_score_matrix
+
+5:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+    # Normalize the distance and demand matrices
+    normalized_distance_matrix = current_distance_matrix / (torch.max(current_distance_matrix) + 1e-6)
+    normalized_demand_matrix = delivery_node_demands / (torch.max(delivery_node_demands) + 1e-6)
+
+    # Calculate the demand and distance scores
+    demand_score = 2.0 * normalized_demand_matrix + 1.0 * torch.randn_like(current_distance_matrix)
+    distance_score = -1.5 * normalized_distance_matrix
+
+    # Combine scores to form initial heuristic score matrix
+    heuristic_score_matrix = demand_score + distance_score
+
+    # Apply load constraints
+    load_constraints = (current_load[:, None] >= delivery_node_demands[None, :]).float()
+    heuristic_score_matrix *= load_constraints
+
+    # Non-linear adjustments with stronger adjustments
+    nonlinear_adjustment = 2.5 * torch.tanh(heuristic_score_matrix) + 1.0 * torch.sigmoid(heuristic_score_matrix)
+
+    # Add more diversity and robustness factors
+    diversity_factor = 0.9 * torch.randn_like(heuristic_score_matrix)
+    robustness_factor = 1.1 * torch.rand_like(heuristic_score_matrix)
+
+    # Calculating the final mutated heuristic score
+    mutated_heuristic_score_matrix = heuristic_score_matrix + nonlinear_adjustment + diversity_factor - robustness_factor
+
+    return mutated_heuristic_score_matrix
+
+6:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    # Normalize the distance matrix and delivery demands using min-max scaling
+    normalized_distance_matrix = (current_distance_matrix - torch.min(current_distance_matrix)) / (torch.max(current_distance_matrix) - torch.min(current_distance_matrix))
+    normalized_demand_matrix = (delivery_node_demands - torch.min(delivery_node_demands)) / (torch.max(delivery_node_demands) - torch.min(delivery_node_demands))
+
+    # Calculate heuristic scores based on distance and demand metrics
+    distance_score = -1.8 * normalized_distance_matrix
+    demand_score = 1.5 * normalized_demand_matrix + 0.7 * torch.randn_like(current_distance_matrix)
+
+    # Compute load feasibility matrix efficiently
+    load_constraints = (current_load[:, None] >= delivery_node_demands[None, :]).float()
+
+    # Combine distance, demand, and load constraints to derive heuristic scores
+    heuristic_score_matrix = (distance_score + demand_score) * load_constraints
+
+    # Introduce a non-linear transformation for enhanced edge selection
+    nonlinear_adjustment = 3.2 * torch.tanh(heuristic_score_matrix) + 1.9 * torch.sigmoid(heuristic_score_matrix)
+    enhanced_heuristic_scores = heuristic_score_matrix + nonlinear_adjustment
+
+    return enhanced_heuristic_scores
+
+7:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    # Normalize distance matrix and delivery node demands
+    normalized_distance_matrix = current_distance_matrix / torch.max(current_distance_matrix)
+    normalized_demand_matrix = delivery_node_demands / torch.max(delivery_node_demands)
+
+    # Calculate scores based on demand, distance, and load constraints with improved weights for V2
+    demand_score_v2 = 2.0 * normalized_demand_matrix + 1.0 * torch.randn_like(current_distance_matrix)
+    distance_score_v2 = -2.5 * normalized_distance_matrix
+    load_constraints_v2 = torch.where(current_load[:, None] >= delivery_node_demands[None, :], 1.0, 0.0)
+
+    # Combine scores and apply load constraints for V2
+    heuristic_score_matrix_v2 = demand_score_v2 + distance_score_v2
+    heuristic_score_matrix_v2 *= load_constraints_v2.float()
+
+    # Apply non-linear enhancement using ReLU and Sigmoid functions with adjusted weights for V2
+    nonlinear_adjustment_v2 = 1.8 * torch.relu(heuristic_score_matrix_v2) + 1.3 * torch.sigmoid(heuristic_score_matrix_v2)
+    enhanced_heuristic_score_matrix_v2 = heuristic_score_matrix_v2 + nonlinear_adjustment_v2
+
+    return enhanced_heuristic_score_matrix_v2
+
+8:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    # Normalize the distance matrix
+    normalized_distance_matrix = current_distance_matrix / (torch.max(current_distance_matrix) + 1e-6)
+
+    # Normalize the delivery node demands
+    normalized_demand_matrix = delivery_node_demands / (torch.max(delivery_node_demands) + 1e-6)
+
+    # Calculate base costs for demand and distance
+    demand_score = 2.5 * normalized_demand_matrix + 1.2 * torch.randn_like(current_distance_matrix)
+    distance_score = -1.8 * normalized_distance_matrix
+
+    # Combine initial scores to create a preliminary heuristic score matrix
+    heuristic_score_matrix = demand_score + distance_score
+
+    # Implement a scaling factor based on the current load as a mask
+    load_constraints = torch.where(current_load[:, None] >= delivery_node_demands[None, :], 1.0, 0.0)
+    heuristic_score_matrix *= load_constraints.float()
+
+    # Use an adjustment with non-linear enhancements
+    nonlinear_adjustment = 2.0 * torch.tanh(heuristic_score_matrix) + 1.0 * torch.sigmoid(heuristic_score_matrix)
+    enhanced_heuristic_score_matrix = heuristic_score_matrix + nonlinear_adjustment
+
+    return enhanced_heuristic_score_matrix
+
+9:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    normalized_distance_matrix = current_distance_matrix / current_distance_matrix.max()
+    normalized_demand_matrix = delivery_node_demands / delivery_node_demands.max()
+
+    demand_score = 1.8 * normalized_demand_matrix + 1.2 * torch.randn_like(current_distance_matrix)
+    distance_score = -2.0 * normalized_distance_matrix
+
+    heuristic_score_matrix = demand_score + distance_score
+
+    strategic_adjustment = 1.2 * torch.tanh(heuristic_score_matrix) + 0.5 * torch.sin(heuristic_score_matrix)
+    diversified_heuristic_score_matrix = heuristic_score_matrix + 1.35 * strategic_adjustment
+
+    improved_adjustment = torch.relu(torch.sigmoid(heuristic_score_matrix)) * 1.6
+    final_heuristic_score_matrix = diversified_heuristic_score_matrix + improved_adjustment
+
+    return final_heuristic_score_matrix
+
+10:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+    normalized_distance_matrix = current_distance_matrix / current_distance_matrix.max()
+    normalized_demand_matrix = delivery_node_demands / delivery_node_demands.max()
+
+    demand_score = 5 * normalized_demand_matrix + 0.75 * torch.randn_like(current_distance_matrix)
+    distance_score = -normalized_distance_matrix
+
+    heuristic_score_matrix = demand_score + distance_score
+
+    strategic_adjustment = torch.tanh(heuristic_score_matrix) + torch.sin(heuristic_score_matrix)
+    diversified_heuristic_score_matrix = heuristic_score_matrix + 1.5 * strategic_adjustment
+
+    improved_adjustment = torch.relu(torch.sigmoid(heuristic_score_matrix)) * 1.5
+    final_heuristic_score_matrix = diversified_heuristic_score_matrix + improved_adjustment
+
+    return final_heuristic_score_matrix

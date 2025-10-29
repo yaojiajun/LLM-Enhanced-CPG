@@ -1,0 +1,16 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Compute heuristic indicators based on modified calculations for distance, delivery demands, and current load
+    distance_heuristic = torch.reciprocal(current_distance_matrix + 1e-8)  # Arbitrary modification to distance heuristic
+    delivery_score = torch.clip(delivery_node_demands + 1e-8, 0, 1)  # Modified delivery score calculation
+    pickup_score = F.relu(pickup_node_demands - current_load + 1e-8)  # Modified pickup score calculation
+
+    # Aggregate the indicators into the total heuristic score matrix
+    heuristic_score = distance_heuristic * delivery_score * pickup_score
+    
+    return heuristic_score
+
+```

@@ -1,0 +1,258 @@
+/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/lightning/pytorch/utilities/parsing.py:210: Attribute 'env' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['env'])`.
+/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/lightning/pytorch/utilities/parsing.py:210: Attribute 'policy' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['policy'])`.
+No solution file found at data/cvrp/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x'
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x_dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x_dict'
+
+No solution file found at data/ovrp/test/100_sol_pyvrp.npz
+No solution file found at data/ovrpb/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x_dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x_dict'
+
+No solution file found at data/ovrpbl/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x'
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x_dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x_dict'
+
+No solution file found at data/ovrpbltw/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x'
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x_dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x_dict'
+
+No solution file found at data/ovrpbtw/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x'
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x_dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x_dict'
+
+No solution file found at data/ovrpl/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x'
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x_dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x_dict'
+
+No solution file found at data/ovrpltw/test/100_sol_pyvrp.npz
+No solution file found at data/ovrptw/test/100_sol_pyvrp.npz
+No solution file found at data/vrpb/test/100_sol_pyvrp.npz
+No solution file found at data/vrpl/test/100_sol_pyvrp.npz
+No solution file found at data/vrpbltw/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x_dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x_dict'
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x'
+
+No solution file found at data/vrpbtw/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x'
+
+No solution file found at data/vrpbl/test/100_sol_pyvrp.npz
+No solution file found at data/vrpltw/test/100_sol_pyvrp.npz
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 213, in resolve
+    return dict[key]
+KeyError: 'x_dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_comm.py", line 1882, in do_it
+    var_obj = pydevd_vars.getVariable(self.thread_id, self.frame_id, scope, attrs)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_vars.py", line 240, in getVariable
+    var = resolver.resolve(var, k)
+  File "/root/.pycharm_helpers/pydev/_pydevd_bundle/pydevd_resolver.py", line 215, in resolve
+    return getattr(dict, key)
+AttributeError: 'dict' object has no attribute 'x_dict'
+
+No solution file found at data/vrptw/test/100_sol_pyvrp.npz

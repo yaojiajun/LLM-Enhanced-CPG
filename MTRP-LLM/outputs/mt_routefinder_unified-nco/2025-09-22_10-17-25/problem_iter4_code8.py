@@ -1,0 +1,16 @@
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Modify the computation of normalized_distance_scores with an emphasis on variation and exploration
+    normalized_distance_scores = -current_distance_matrix / torch.max(current_distance_matrix) + torch.rand_like(current_distance_matrix) * 0.8
+
+    # Adjust the computation of demand_scores to increase the penalty for unfulfilled deliveries and diversify exploration
+    demand_scores = (delivery_node_demands.unsqueeze(0) - current_load.unsqueeze(1)) * 0.7 + torch.max(delivery_node_demands) / 1.5 + torch.rand_like(current_distance_matrix) * 0.4
+
+    # Retain enhanced noise level for exploration
+    enhanced_noise = torch.rand_like(current_distance_matrix) * 2.5
+
+    # Combine the modified heuristic scores for improved heuristics exploration
+    overall_scores = normalized_distance_scores + demand_scores + enhanced_noise
+
+    return overall_scores

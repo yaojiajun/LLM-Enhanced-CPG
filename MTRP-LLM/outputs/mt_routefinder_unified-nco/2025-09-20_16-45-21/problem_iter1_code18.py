@@ -1,0 +1,50 @@
+import torch
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+    
+    epsilon = 1e-8
+    
+    # Heuristic score initialization
+    heuristic_scores = torch.zeros_like(current_distance_matrix)
+    
+    # Calculate distance-based heuristic score (inverse distance is better)
+    distance_scores = 1 / (current_distance_matrix + epsilon)
+    
+    # Delivery feasibility checks (must handle current and delivery demands)
+    demand_feasibility_delivery = (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0))
+    demand_feasibility_delivery = demand_feasibility_delivery.float()
+    
+    deliverable_scores = distance_scores * demand_feasibility_delivery
+    
+    # Time windows feasibility check
+    time_feasibility = (arrival_times + current_distance_matrix <= time_windows[:, 1].unsqueeze(0)) & \
+                       (arrival_times >= time_windows[:, 0].unsqueeze(0))
+                      
+    
+    feasible_scores = deliverable_scores * time_feasibility.float()
+    
+    # Backhaul exposure adjusting scores
+    backhaul_exposure = (pickup_node_demands.unsqueeze(0) <= current_load.unsqueeze(1)).float()
+    
+    # Combined scoring with random controlled component to encourage exploration
+    randomness_component = torch.rand(feasible_scores.size()) * 0.1
+    combined_scores = feasible_scores + randomness_component
+    
+    # Capping scores beyond certain thresholds
+    max_score_limit = 1e5
+    capped_scores = torch.clamp(combined_scores, max=max_score_limit)
+    
+    # Mask any remaining infeasible routes (considered as negatively scoring)
+    score_mask = feasible_scores > 0
+    masked_scores = capped_scores * score_mask.float()
+
+    return masked_scores

@@ -1,0 +1,38 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Generate random weights
+    rand_weights = torch.rand_like(current_distance_matrix)
+
+    # Normalize the distance matrix
+    max_distance = torch.max(current_distance_matrix)
+    normalized_distance = current_distance_matrix / max_distance
+    
+    # Calculate scores using Tanh and ReLU with added randomness
+    score1 = torch.tanh(normalized_distance) * rand_weights
+    score2 = torch.relu(torch.exp(current_distance_matrix)) + rand_weights
+    
+    # Calculate additional scores based on capacity, time windows and route length
+    load_penalty = torch.where(current_load.unsqueeze(1) >= delivery_node_demands, torch.zeros_like(delivery_node_demands), torch.full_like(delivery_node_demands, -1e5))
+    delivery_time_scores = torch.where((arrival_times.unsqueeze(1) >= time_windows[:, 0]) & (arrival_times.unsqueeze(1) <= time_windows[:, 1]), torch.zeros_like(delivery_node_demands), torch.full_like(delivery_node_demands, -1e5))
+    length_penalty = torch.where(current_length.view(-1, 1) >= current_distance_matrix, torch.zeros_like(current_distance_matrix), torch.full_like(current_distance_matrix, -1e5))
+
+    # Combine scores with weights
+    combined_scores = score1 + load_penalty + delivery_time_scores + length_penalty - score2
+
+    # Apply randomization factor for enhanced exploration
+    exploration_factor = torch.rand_like(combined_scores) * 0.1
+    heuristic_scores = combined_scores + exploration_factor
+
+    return heuristic_scores
+```

@@ -1,0 +1,1 @@
+def heuristics_v{version}(node_coords: torch.Tensor,demands: torch.Tensor,time_windows: torch.Tensor) -> torch.Tensor:

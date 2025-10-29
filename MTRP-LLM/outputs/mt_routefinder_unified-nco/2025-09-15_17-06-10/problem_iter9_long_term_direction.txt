@@ -1,0 +1,4 @@
+1. Experiment with hybrid nonlinear transformations that combine multiple functions for richer score evaluation.
+2. Implement dynamic weighting influenced by customer proximity or demand to enhance adaptability.
+3. Prioritize essential components in scoring to maintain simplicity while maximizing exploration.
+4. Use ensemble heuristics to leverage diverse strategies for improved solution robustness.

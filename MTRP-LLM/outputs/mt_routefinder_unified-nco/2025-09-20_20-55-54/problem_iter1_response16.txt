@@ -1,0 +1,30 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    epsilon = 1e-8
+
+    # Compute load ratios for node feasibility
+    load_ratios = current_load / (delivery_node_demands + epsilon)
+    load_ratios_open = current_load_open / (delivery_node_demands_open + epsilon)
+    
+    # Apply numerical stability for load ratios
+    load_ratios = torch.clamp(load_ratios, min=0.0, max=torch.finfo(load_ratios.dtype).max)
+    load_ratios_open = torch.clamp(load_ratios_open, min=0.0, max=torch.finfo(load_ratios_open.dtype).max)
+    
+    # Compute time window ratios
+    time_earliest = time_windows[:, 0]
+    time_latest = time_windows[:, 1]
+    arrival_diff = arrival_times[:, :-1] - arrival_times[:, 1:]
+    time_window_ratios = arrival_diff / (time_latest.unsqueeze(0) - time_earliest.unsqueeze(1) + epsilon)
+    
+    # Apply numerical stability for time window ratios
+    time_window_ratios = torch.clamp(time_window_ratios, min=0.0, max=torch.finfo(time_window_ratios.dtype).max)
+    
+    # Compute score matrix with controlled randomness
+    heuristic_scores = current_distance_matrix / (load_ratios_open.unsqueeze(1) + epsilon) - F.relu((f.sin(current_distance_matrix) - f.cos(load_ratios) * f.tan(time_window_ratios)))
+    
+    return heuristic_scores
+
+```

@@ -1,0 +1,19 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Create a heuristic score matrix using a combination of different features
+    heuristic_scores = torch.zeros_like(current_distance_matrix)
+
+    # Calculate a composite score based on various factors such as distance, load, time windows, and duration
+    distance_scores = -current_distance_matrix * 0.5
+    load_scores = (current_load + current_load_open - delivery_node_demands - delivery_node_demands_open).clamp(max=0) * 0.3
+    time_window_scores = (((arrival_times[..., 1:] - arrival_times[..., :-1]) - (time_windows[:, 1] - arrival_times[..., :-1])) / (time_windows[:, 1] - time_windows[:, 0])).clamp(min=-1, max=1) * 0.2
+    pickup_capacity_scores = ((current_load - pickup_node_demands).clamp(min=0) * 0.1) + ((current_length) * 0.05)
+    
+    heuristic_scores = distance_scores + load_scores + time_window_scores + pickup_capacity_scores
+
+    return F.leaky_relu(heuristic_scores, negative_slope=0.1)
+
+```

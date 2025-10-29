@@ -1,0 +1,12 @@
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Generate a mutated distance-based heuristic score matrix with a different penalty function and randomness
+    mutated_distance_scores = -1 * (current_distance_matrix ** 1.7) * 0.15 + torch.randn_like(current_distance_matrix) * 0.2
+
+    # Generate the modified demand-based heuristic score matrix using a different demand balance approach and randomness
+    mutated_demand_scores = (current_load.unsqueeze(1) + delivery_node_demands.unsqueeze(0).float() * 0.25) - (1 / (1 + torch.exp(torch.mean(current_load) - torch.min(current_load)))) + torch.randn_like(current_distance_matrix) * 0.3
+
+    # Calculate the overall score matrix for edge selection by combining mutated distance and demand scores
+    overall_scores = mutated_distance_scores + mutated_demand_scores
+
+    return overall_scores

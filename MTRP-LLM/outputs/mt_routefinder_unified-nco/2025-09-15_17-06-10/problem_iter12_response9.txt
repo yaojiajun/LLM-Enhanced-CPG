@@ -1,0 +1,30 @@
+```python
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    rand_weights1 = torch.rand_like(current_distance_matrix)
+    rand_weights2 = torch.rand_like(current_distance_matrix)
+    
+    # Problem-specific metrics
+    customer_net_demand = delivery_node_demands - pickup_node_demands
+    effective_demand = torch.maximum(customer_net_demand, torch.tensor(0.0, device=current_distance_matrix.device))
+    
+    # Normalizing distance and demand
+    normalized_distance = current_distance_matrix / (torch.max(current_distance_matrix) + 1e-10)
+    normalized_effective_demand = effective_demand / (torch.max(effective_demand) + 1e-10)
+    
+    # Combining multiple heuristics
+    score1 = (1 - normalized_distance) * torch.sigmoid(normalized_effective_demand) * rand_weights1
+    score2 = (torch.sin(current_distance_matrix) + torch.sqrt(normalized_effective_demand + 1e-10)) + rand_weights2
+
+    # Time window penalties
+    current_time = arrival_times + current_distance_matrix
+    time_window_mask = (current_time >= time_windows[:, 0].reshape(-1, 1)) & (current_time <= time_windows[:, 1].reshape(-1, 1))
+    time_penalty = ~time_window_mask.float() * 1000  # Large penalty for time window violations
+
+    heuristic_scores = score1 - (score2 + time_penalty)
+
+    # Incorporating exploration and randomness
+    exploration_factor = 0.1 * torch.rand_like(heuristic_scores)
+    final_scores = heuristic_scores + exploration_factor
+
+    return final_scores
+```

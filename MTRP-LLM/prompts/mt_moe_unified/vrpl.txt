@@ -1,0 +1,384 @@
+1:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Distance scores
+    distance_scores = -current_distance_matrix
+    distance_noise = 0.2 * torch.rand_like(distance_scores) * (0.3 + 0.5 * torch.rand_like(distance_scores))
+    max_distance = current_distance_matrix.max().item() + 1
+    distance_scores += distance_noise / max_distance
+
+    # Demand scores
+    demand_scores = -delivery_node_demands.unsqueeze(0)
+    demand_noise = 0.3 * torch.rand_like(demand_scores) * (0.4 + 0.6 * torch.rand_like(demand_scores))
+    max_demand = delivery_node_demands.max().item() + 1
+    demand_scores += demand_noise / max_demand
+
+    # Load scores
+    load_scores = current_load.unsqueeze(1)
+    load_noise = 0.4 * torch.rand_like(load_scores) * (0.5 + 0.7 * torch.rand_like(load_scores))
+    max_load = current_load.max().item() + 1
+    load_scores += load_noise / max_load
+
+    # Length scores
+    length_scores = -current_length.unsqueeze(1)
+    length_noise = 0.5 * torch.rand_like(length_scores) * (0.6 + 0.8 * torch.rand_like(length_scores))
+    max_length = current_length.max().item() + 1
+    length_scores += length_noise / max_length
+
+    # Multi-feature interactions with dynamic noise scaling
+    distance_weight = 0.6
+    demand_weight = 0.2
+    load_weight = 0.1
+    length_weight = 0.1
+    heuristic_scores = distance_weight * distance_scores + demand_weight * demand_scores + load_weight * load_scores + length_weight * length_scores
+
+    # Normalize consistently
+    max_scores = torch.max(heuristic_scores)
+    min_scores = torch.min(heuristic_scores)
+    normalized_scores = (heuristic_scores - min_scores) / (max_scores - min_scores)
+
+    # Adjust exploration
+    exploration_weight = 0.3 * torch.rand_like(normalized_scores)
+    exploration_scaling = 0.6
+    normalized_scores += exploration_weight * (0.3 + 0.7 * torch.rand_like(normalized_scores)) * exploration_scaling
+
+    return normalized_scores
+
+2:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Distance scores with noise for diversity and exploration
+    distance_scores = -current_distance_matrix
+    distance_noise = 0.35 * torch.rand_like(distance_scores) * (0.5 + 0.5 * torch.rand_like(distance_scores))
+    max_distance = current_distance_matrix.max().item() + 1
+    distance_scores += distance_noise / max_distance
+
+    # Demand scores with increased noise levels
+    demand_scores = -delivery_node_demands.unsqueeze(0)
+    demand_noise = 0.5 * torch.rand_like(demand_scores) * (0.3 + 0.5 * torch.rand_like(demand_scores))
+    max_demand = delivery_node_demands.max().item() + 1
+    demand_scores += demand_noise / max_demand
+
+    # Load scores with dynamic noise scaling for exploration
+    load_scores = current_load.unsqueeze(1)
+    load_noise = 0.5 * torch.rand_like(load_scores) * (0.4 + 0.6 * torch.rand_like(load_scores))
+    max_load = current_load.max().item() + 1
+    load_scores += load_noise / max_load
+
+    # Length scores with adjusted noise levels
+    length_scores = -current_length.unsqueeze(1)
+    length_noise = 0.6 * torch.rand_like(length_scores) * (0.2 + 0.4 * torch.rand_like(length_scores))
+    max_length = current_length.max().item() + 1
+    length_scores += length_noise / max_length
+
+    # Multi-feature interactions with balanced weights and increased exploration diversity
+    heuristic_scores = 0.35 * distance_scores + 0.3 * demand_scores + 0.25 * load_scores + 0.1 * length_scores
+
+    # Consistent normalization across features
+    max_scores = torch.max(heuristic_scores)
+    min_scores = torch.min(heuristic_scores)
+    normalized_scores = (heuristic_scores - min_scores) / (max_scores - min_scores)
+
+    # Additional exploration variance for better trajectory selection
+    exploration_weight = 0.2 * torch.rand_like(normalized_scores)
+    normalized_scores += exploration_weight * (0.4 + 0.6 * torch.rand_like(normalized_scores))
+
+    return normalized_scores
+
+3:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Distance scores
+    distance_scores = -current_distance_matrix
+    distance_noise = 0.35 * torch.rand_like(distance_scores) * (0.25 + 0.45 * torch.rand_like(distance_scores))
+    max_distance = current_distance_matrix.max().item() + 1
+    distance_scores += distance_noise / max_distance
+
+    # Demand scores
+    demand_scores = -2 * delivery_node_demands.unsqueeze(0)
+    demand_noise = 0.4 * torch.rand_like(demand_scores) * (0.3 + 0.5 * torch.rand_like(demand_scores))
+    max_demand = delivery_node_demands.max().item() + 1
+    demand_scores += demand_noise / max_demand
+
+    # Load scores
+    load_scores = current_load.unsqueeze(1)
+    load_noise = 0.55 * torch.rand_like(load_scores) * (0.35 + 0.55 * torch.rand_like(load_scores))
+    max_load = current_load.max().item() + 1
+    load_scores += load_noise / max_load
+
+    # Length scores
+    length_scores = -1.5 * current_length.unsqueeze(1)
+    length_noise = 0.45 * torch.rand_like(length_scores) * (0.4 + 0.6 * torch.rand_like(length_scores))
+    max_length = current_length.max().item() + 1
+    length_scores += length_noise / max_length
+
+    # Multi-feature interactions with dynamic noise scaling and diverse feature impacts
+    heuristic_scores = 0.5 * distance_scores + 0.3 * demand_scores + 0.15 * load_scores + 0.05 * length_scores
+
+    # Normalize consistently with strategic noise adjustment
+    max_scores = torch.max(heuristic_scores)
+    min_scores = torch.min(heuristic_scores)
+    normalized_scores = (heuristic_scores - min_scores) / (max_scores - min_scores)
+
+    # Adjust exploration balance with noise scaling
+    exploration_weight = 0.2 + 0.8 * torch.rand_like(normalized_scores)
+    normalized_scores += exploration_weight * torch.rand_like(normalized_scores)
+
+    return normalized_scores
+
+4:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Distance scores
+    distance_scores = current_distance_matrix * -1
+    distance_noise = 0.25 * torch.rand_like(distance_scores) * (0.2 + 0.4 * torch.rand_like(distance_scores))
+    max_distance = current_distance_matrix.max().item() + 1
+    distance_scores += distance_noise / max_distance
+
+    # Demand scores
+    demand_scores = delivery_node_demands.unsqueeze(0) * -1
+    demand_noise = 0.35 * torch.rand_like(demand_scores) * (0.3 + 0.5 * torch.rand_like(demand_scores))
+    max_demand = delivery_node_demands.max().item() + 1
+    demand_scores += demand_noise / max_demand
+
+    # Load scores
+    load_scores = current_load.unsqueeze(1)
+    load_noise = 0.5 * torch.rand_like(load_scores) * (0.4 + 0.6 * torch.rand_like(load_scores))
+    max_load = current_load.max().item() + 1
+    load_scores += load_noise / max_load
+
+    # Length scores
+    length_scores = current_length.unsqueeze(1) * -1
+    length_noise = 0.6 * torch.rand_like(length_scores) * (0.5 + 0.7 * torch.rand_like(length_scores))
+    max_length = current_length.max().item() + 1
+    length_scores += length_noise / max_length
+
+    # Multi-feature interactions with dynamic noise scaling
+    heuristic_scores = 0.4 * distance_scores + 0.3 * demand_scores + 0.2 * load_scores + 0.1 * length_scores
+
+    # Normalize consistently
+    max_scores = torch.max(heuristic_scores)
+    min_scores = torch.min(heuristic_scores)
+    normalized_scores = (heuristic_scores - min_scores) / (max_scores - min_scores)
+
+    # Adjust exploration
+    exploration_weight = torch.rand_like(normalized_scores)
+    normalized_scores += exploration_weight * (0.2 + 0.6 * torch.rand_like(normalized_scores))
+
+    return normalized_scores
+
+5:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Distance scores with diversified noise scaling
+    distance_scores = -current_distance_matrix
+    distance_noise = 0.25 * torch.rand_like(distance_scores) * (0.2 + 0.4 * torch.rand_like(distance_scores))
+    max_distance = current_distance_matrix.max().item() + 1
+    distance_scores += distance_noise / max_distance
+
+    # Demand scores with diversified noise scaling
+    demand_scores = -delivery_node_demands.unsqueeze(0)
+    demand_noise = 0.35 * torch.rand_like(demand_scores) * (0.3 + 0.5 * torch.rand_like(demand_scores))
+    max_demand = delivery_node_demands.max().item() + 1
+    demand_scores += demand_noise / max_demand
+
+    # Load scores with diversified noise scaling
+    load_scores = current_load.unsqueeze(1)
+    load_noise = 0.5 * torch.rand_like(load_scores) * (0.4 + 0.6 * torch.rand_like(load_scores))
+    max_load = current_load.max().item() + 1
+    load_scores += load_noise / max_load
+
+    # Length scores with diversified noise scaling
+    length_scores = -current_length.unsqueeze(1)
+    length_noise = 0.6 * torch.rand_like(length_scores) * (0.5 + 0.7 * torch.rand_like(length_scores))
+    max_length = current_length.max().item() + 1
+    length_scores += length_noise / max_length
+
+    # Advanced multi-feature interactions with balanced feature weightings
+    heuristic_scores = 0.4 * distance_scores + 0.3 * demand_scores + 0.2 * load_scores + 0.1 * length_scores
+
+    # Normalize consistently
+    heuristic_scores = (heuristic_scores - heuristic_scores.min()) / (heuristic_scores.max() - heuristic_scores.min())
+
+    return heuristic_scores
+
+6:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Distance scores
+    distance_scores = -current_distance_matrix
+    max_distance = current_distance_matrix.max().item() + 1
+    distance_noise = 0.25 * torch.rand_like(distance_scores) * (0.2 + 0.4 * torch.rand_like(distance_scores))
+    distance_scores += distance_noise / max_distance
+
+    # Demand scores
+    demand_scores = -delivery_node_demands.unsqueeze(0)
+    max_demand = delivery_node_demands.max().item() + 1
+    demand_noise = 0.35 * torch.rand_like(demand_scores) * (0.3 + 0.5 * torch.rand_like(demand_scores))
+    demand_scores += demand_noise / max_demand
+
+    # Load scores
+    load_scores = current_load.unsqueeze(1)
+    max_load = current_load.max().item() + 1
+    load_noise = 0.5 * torch.rand_like(load_scores) * (0.4 + 0.6 * torch.rand_like(load_scores))
+    load_scores += load_noise / max_load
+
+    # Length scores
+    length_scores = -current_length.unsqueeze(1)
+    max_length = current_length.max().item() + 1
+    length_noise = 0.6 * torch.rand_like(length_scores) * (0.5 + 0.7 * torch.rand_like(length_scores))
+    length_scores += length_noise / max_length
+
+    # Multi-feature interactions with synchronized noise scaling and consistent normalization
+    random_noise = 0.1 + 0.3 * torch.rand(current_distance_matrix.shape)
+    heuristic_scores = distance_scores + 0.8 * demand_scores + 0.6 * load_scores + 0.4 * length_scores + random_noise
+
+    # Normalize consistently
+    max_scores = torch.max(heuristic_scores)
+    min_scores = torch.min(heuristic_scores)
+    normalized_scores = (heuristic_scores - min_scores) / (max_scores - min_scores)
+
+    # Adjust exploration with adaptive noise
+    exploration_noise = 0.2 + 0.6 * torch.rand(normalized_scores.shape)
+    normalized_scores += exploration_noise
+
+    return normalized_scores
+
+7:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Distance scores with added noise
+    distance_scores = -current_distance_matrix
+    distance_noise = 0.3 * torch.rand_like(distance_scores) * (0.1 + 0.3 * torch.rand_like(distance_scores))
+    max_distance = current_distance_matrix.max().item() + 1
+    distance_scores += distance_noise / max_distance
+
+    # Demand scores with added noise
+    demand_scores = -delivery_node_demands.unsqueeze(0)
+    demand_noise = 0.4 * torch.rand_like(demand_scores) * (0.2 + 0.4 * torch.rand_like(demand_scores))
+    max_demand = delivery_node_demands.max().item() + 1
+    demand_scores += demand_noise / max_demand
+
+    # Load scores with added noise
+    load_scores = current_load.unsqueeze(1)
+    load_noise = 0.6 * torch.rand_like(load_scores) * (0.3 + 0.5 * torch.rand_like(load_scores))
+    max_load = current_load.max().item() + 1
+    load_scores += load_noise / max_load
+
+    # Length scores with added noise
+    length_scores = -current_length.unsqueeze(1)
+    length_noise = 0.5 * torch.rand_like(length_scores) * (0.15 + 0.25 * torch.rand_like(length_scores))
+    max_length = current_length.max().item() + 1
+    length_scores += length_noise / max_length
+
+    # Multi-feature interactions with dynamic noise scaling
+    heuristic_scores = 0.35 * distance_scores + 0.25 * demand_scores + 0.2 * load_scores + 0.2 * length_scores
+
+    # Normalize consistently
+    max_scores = torch.max(heuristic_scores)
+    min_scores = torch.min(heuristic_scores)
+    normalized_scores = (heuristic_scores - min_scores) / (max_scores - min_scores)
+
+    # Adjust exploration
+    exploration_weight = torch.rand_like(normalized_scores)
+    normalized_scores += exploration_weight * (0.15 + 0.35 * torch.rand_like(normalized_scores))
+
+    return normalized_scores
+
+8:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Distance scores with noise
+    distance_scores = -current_distance_matrix
+    noise_distance = 0.25 * torch.rand_like(distance_scores) * (0.2 + 0.4 * torch.rand_like(distance_scores)) / (current_distance_matrix.max().item() + 1)
+    distance_scores += noise_distance
+
+    # Demand scores with noise
+    demand_scores = -delivery_node_demands.unsqueeze(0)
+    noise_demand = 0.35 * torch.rand_like(demand_scores) * (0.3 + 0.5 * torch.rand_like(demand_scores)) / (delivery_node_demands.max().item() + 1)
+    demand_scores += noise_demand
+
+    # Load scores with noise
+    load_scores = current_load.unsqueeze(1)
+    noise_load = 0.5 * torch.rand_like(load_scores) * (0.4 + 0.6 * torch.rand_like(load_scores)) / (current_load.max().item() + 1)
+    load_scores += noise_load
+
+    # Length scores with noise
+    length_scores = -current_length.unsqueeze(1)
+    noise_length = 0.6 * torch.rand_like(length_scores) * (0.5 + 0.7 * torch.rand_like(length_scores)) / (current_length.max().item() + 1)
+    length_scores += noise_length
+
+    # Heuristic scores with multi-feature interactions and exploration weight
+    heuristic_scores = 0.4 * distance_scores + 0.3 * demand_scores + 0.2 * load_scores + 0.1 * length_scores
+    exploration_weight = 0.2 + 0.6 * torch.rand_like(heuristic_scores)
+    heuristic_scores += exploration_weight * torch.randn_like(heuristic_scores)
+
+    # Normalize scores
+    normalized_scores = (heuristic_scores - torch.min(heuristic_scores)) / (torch.max(heuristic_scores) - torch.min(heuristic_scores))
+
+    # Introduce adaptive noise scaling
+    noise_scale = 0.1 + 0.5 * (1 - torch.exp(-torch.std(normalized_scores)))
+    normalized_scores += noise_scale * torch.randn_like(normalized_scores)
+
+    return normalized_scores
+
+9:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Distance scores
+    distance_scores = -current_distance_matrix
+    distance_noise = 0.25 * torch.rand_like(distance_scores) * (0.2 + 0.4 * torch.rand_like(distance_scores))
+    max_distance = current_distance_matrix.max().item() + 1
+    distance_scores += distance_noise / max_distance
+
+    # Demand scores
+    demand_scores = -delivery_node_demands.unsqueeze(0)
+    demand_noise = 0.35 * torch.rand_like(demand_scores) * (0.3 + 0.5 * torch.rand_like(demand_scores))
+    max_demand = delivery_node_demands.max().item() + 1
+    demand_scores += demand_noise / max_demand
+
+    # Load scores
+    load_scores = current_load.unsqueeze(1)
+    load_noise = 0.5 * torch.rand_like(load_scores) * (0.4 + 0.6 * torch.rand_like(load_scores))
+    max_load = current_load.max().item() + 1
+    load_scores += load_noise / max_load
+
+    # Length scores
+    length_scores = -current_length.unsqueeze(1)
+    length_noise = 0.6 * torch.rand_like(length_scores) * (0.5 + 0.7 * torch.rand_like(length_scores))
+    max_length = current_length.max().item() + 1
+    length_scores += length_noise / max_length
+
+    # Multi-feature interactions with dynamic noise scaling
+    heuristic_scores = 0.4 * distance_scores + 0.3 * demand_scores + 0.2 * load_scores + 0.1 * length_scores
+
+    # Normalize consistently
+    max_scores = torch.max(heuristic_scores)
+    min_scores = torch.min(heuristic_scores)
+    normalized_scores = (heuristic_scores - min_scores) / (max_scores - min_scores)
+
+    # Adjust exploration
+    exploration_weight = torch.rand_like(normalized_scores)
+    normalized_scores += exploration_weight * (0.2 + 0.6 * torch.rand_like(normalized_scores))
+
+    return normalized_scores
+
+10:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Distance scores with dynamic noise scaling
+    distance_scores = -current_distance_matrix
+    distance_noise = 0.25 * torch.rand_like(distance_scores) * (0.2 + 0.4 * torch.rand_like(distance_scores))
+    max_distance = current_distance_matrix.max().item() + 1
+    distance_scores += distance_noise / max_distance
+
+    # Demand scores with dynamic noise scaling
+    demand_scores = -delivery_node_demands.unsqueeze(0)
+    demand_noise = 0.35 * torch.rand_like(demand_scores) * (0.3 + 0.5 * torch.rand_like(demand_scores))
+    max_demand = delivery_node_demands.max().item() + 1
+    demand_scores += demand_noise / max_demand
+
+    # Load scores with dynamic noise scaling
+    load_scores = current_load.unsqueeze(1)
+    load_noise = 0.5 * torch.rand_like(load_scores) * (0.4 + 0.6 * torch.rand_like(load_scores))
+    max_load = current_load.max().item() + 1
+    load_scores += load_noise / max_load
+
+    # Length scores with dynamic noise scaling
+    length_scores = -current_length.unsqueeze(1)
+    length_noise = 0.6 * torch.rand_like(length_scores) * (0.5 + 0.7 * torch.rand_like(length_scores))
+    max_length = current_length.max().item() + 1
+    length_scores += length_noise / max_length
+
+    # Custom feature interactions with dynamic noise scaling
+    heuristic_scores = 0.4 * distance_scores + 0.3 * demand_scores + 0.2 * load_scores + 0.1 * length_scores
+
+    # Normalize consistently
+    max_scores = torch.max(heuristic_scores)
+    min_scores = torch.min(heuristic_scores)
+    normalized_scores = (heuristic_scores - min_scores) / (max_scores - min_scores)
+
+    return normalized_scores

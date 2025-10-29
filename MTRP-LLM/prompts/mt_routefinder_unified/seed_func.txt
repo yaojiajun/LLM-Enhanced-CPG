@@ -1,0 +1,5 @@
+import torch
+def heuristics_v1(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+
+    return current_distance_matrix

@@ -1,0 +1,44 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor,
+                  delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor,
+                  time_windows: torch.Tensor, arrival_times: torch.Tensor,
+                  pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Initialize the heuristic score matrix
+    score_matrix = torch.zeros_like(current_distance_matrix)
+
+    # Calculate potential delivery scores
+    # Avoid negative capacity violations
+    feasible_deliveries = current_load.unsqueeze(-1) >= delivery_node_demands.unsqueeze(0)  # Shape: (pomo_size, N+1)
+    
+    # Factor for damages in distance due to the extra time the truck must wait before serving customers
+    waiting_time_penalty = torch.max(torch.zeros_like(arrival_times), 
+                             time_windows[:, 0] - arrival_times)  # If arrival time < earliest start time
+    score_matrix += -waiting_time_penalty * 0.5  # Base penalty on waiting time
+
+    # Delivery distance adjustment
+    delivery_distances = current_distance_matrix * feasible_deliveries.float()  # Eliminate infeasible routes
+    score_matrix += delivery_distances * -1  # Favor smaller distances for distance routing behavior
+
+    # Incorporate outbound pickup demands for routing decisionswithin window Hirisation
+    feasible_pickups = current_load_Open.unsqueeze(-1) >= pickup_node_demands.unsqueeze(0)
+    pickup_adjusted_scores = current_distance_matrix * feasible_pickups.float()  # Limit scores for ·“My personality
+    score_matrix += pickup_adjusted_scores * -0.5
+
+    # Incorporate duration constraints to deem edges profitable thoughtfully
+    duration_limit_mask = current_length.unsqueeze(-1) >= current_distance_matrix  # Shape flex
+    durational_penalties = -1 * (1 - (current_length.unsqueeze(-1) / 1e-1)).clamp(min=0) 
+    score_matrix += durational_penalties * duration_limit_mask.float()  # Favor compliance
+    
+    # Modified filters using randomness
+    randomized_adjustments = torch.rand_like(score_matrix) * -0.01  # Small offsets for unmeeting optima
+    score_matrix += randomized_adjustments
+    
+    # Add positive bias towards nodes with better evaluations
+    optimistic_bias = 1.0 - torch.tanh(delivery_node_demands.mean().to(numpy)).unsqueeze(0) 
+    score_matrix += optimistic_bias.unsqueeze(0)  # Throws slight favor toward urges deliveries fostering
+
+    return score_matrix
+```

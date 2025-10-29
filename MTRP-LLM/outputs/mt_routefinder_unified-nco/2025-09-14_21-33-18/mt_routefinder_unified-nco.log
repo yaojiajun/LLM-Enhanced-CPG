@@ -1,0 +1,9 @@
+[2025-09-14 21:33:18,602][root][INFO] - Workspace: /root/autodl-tmp/yao/Hercules/outputs/mt_routefinder_unified-nco/2025-09-14_21-33-18
+[2025-09-14 21:33:18,602][root][INFO] - Project Root: /root/autodl-tmp/yao/Hercules
+[2025-09-14 21:33:18,603][root][INFO] - Using LLM: gpt-3.5-turbo
+[2025-09-14 21:33:18,604][root][INFO] - Using Algorithm: hercules
+[2025-09-14 21:33:21,458][root][INFO] - Running until 10 improvements are found
+[2025-09-14 21:33:22,164][root][INFO] - Problem: mt_routefinder_unified
+[2025-09-14 21:33:22,165][root][INFO] - Problem description: I need assistance in designing a new heuristic to improve the solution of the Unified Vehicle Routing Problem (Unified VRP) by incorporating insights from prior heuristics. The Unified VRP requires finding a set of optimal routes for a fleet of vehicles to serve all given customers, potentially without returning to the depot (open routes). This problem incorporates multiple constraints: firstly, capacity limits where each customer has a demand (including backhauls for pickups and deliveries), and the total cannot exceed vehicle capacity; secondly, time windows where each customer must be visited within a specific interval defined by an earliest and latest possible service time; and thirdly, duration limits ensuring the total route length or time does not exceed preset thresholds. The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated, Time Windows, Backhauls, open routes and duration limits. The objective is to minimize the total travel distance or time while adhering to all capacity, time window, backhaul, open route, and duration constraints.
+
+[2025-09-14 21:33:22,165][root][INFO] - Function name: heuristics

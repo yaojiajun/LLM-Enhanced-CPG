@@ -1,0 +1,36 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Initialize heuristic scores matrix
+    heuristic_scores = torch.zeros_like(current_distance_matrix)
+
+    # Capacity constraints for delivery and pickup
+    capacity_constraints_delivery = (current_load.unsqueeze(1) >= delivery_node_demands[None, :])
+    capacity_constraints_pickup = (current_load_open.unsqueeze(1) >= pickup_node_demands[None, :])
+
+    # Time window feasibility
+    arrival_times_to_nodes = arrival_times.unsqueeze(1) + current_distance_matrix
+    within_time_windows = (arrival_times_to_nodes >= time_windows[:, 0]) & (arrival_times_to_nodes <= time_windows[:, 1])
+
+    # Duration limits
+    feasible_length = (current_length.unsqueeze(1) >= current_distance_matrix)
+
+    # Combine constraints
+    feasibility_mask = capacity_constraints_delivery & capacity_constraints_pickup & within_time_windows & feasible_length
+
+    # Calculate heuristic scores
+    heuristic_scores[feasibility_mask] = 1.0 / current_distance_matrix[feasibility_mask]  # Favor shorter distances
+
+    # Introduce randomness to prevent local optima convergence
+    random_noise = torch.rand_like(heuristic_scores) * 0.1  # Small perturbation
+    heuristic_scores += random_noise
+
+    # Normalize scores to the range [0, 1]
+    min_score = heuristic_scores.min()
+    max_score = heuristic_scores.max()
+    if max_score - min_score > 0:  # To avoid division by zero
+        heuristic_scores = (heuristic_scores - min_score) / (max_score - min_score)
+
+    return heuristic_scores
+```

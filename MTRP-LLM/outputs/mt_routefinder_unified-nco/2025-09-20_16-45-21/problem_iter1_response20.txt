@@ -1,0 +1,41 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Define a small positive epsilon for numerical stability
+    epsilon = 1e-8
+    n_routes, n_nodes = current_distance_matrix.shape
+    
+    # Calculate heuristics for delivery and pickup feasibility
+    delivery_score = (current_load.unsqueeze(1) - delivery_node_demands.unsqueeze(0)) / (current_distance_matrix + epsilon)
+    delivery_score = torch.where(delivery_score >= 0, delivery_score, torch.zeros_like(delivery_score))
+
+    # Calculate arrival time managing time windows
+    time_window_progress = (arrival_times.unsqueeze(1) - time_windows[:, 0].unsqueeze(0)) / (time_windows[:, 1] - time_windows[:, 0] + epsilon)
+    time_window_progress = torch.clamp(time_window_progress, 0, 1) * 2 - 1  # Normalize to range [-1, 1]
+
+    # Calculate remaining length budget already safely factoring epsilon
+    duration_normalized = (current_length.unsqueeze(1) - current_distance_matrix) / (current_length.unsqueeze(1) + epsilon)
+    duration_normalized = torch.where(duration_normalized >= 0, duration_normalized, torch.zeros_like(duration_normalized))
+
+    # Introduce controlled randomness to heuristic to escape local optima
+    random_factor = (torch.rand_like(delivery_score) * 0.01) - 0.005  # Random perturbation
+
+    # Heuristic score population.
+    heuristic_scores = (delivery_score + time_window_progress + duration_normalized + random_factor) / (1.0 + epsilon)
+    
+    # Ensure that we only return finite values and handle potential large scores
+    heuristic_scores[torch.isnan(heuristic_scores)] = 0
+    heuristic_scores[torch.isinf(heuristic_scores)] = 0
+
+    return heuristic_scores
+```

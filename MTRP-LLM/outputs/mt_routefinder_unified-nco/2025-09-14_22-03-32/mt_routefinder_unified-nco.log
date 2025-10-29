@@ -1,0 +1,17 @@
+[2025-09-14 22:03:32,984][root][INFO] - Workspace: /root/autodl-tmp/yao/Hercules/outputs/mt_routefinder_unified-nco/2025-09-14_22-03-32
+[2025-09-14 22:03:32,984][root][INFO] - Project Root: /root/autodl-tmp/yao/Hercules
+[2025-09-14 22:03:32,984][root][INFO] - Using LLM: gpt-3.5-turbo
+[2025-09-14 22:03:32,985][root][INFO] - Using Algorithm: hercules
+[2025-09-14 22:03:34,704][root][INFO] - Running until 10 improvements are found
+[2025-09-14 22:03:34,706][root][INFO] - Problem: mt_routefinder_unified
+[2025-09-14 22:03:34,706][root][INFO] - Problem description: I need assistance in designing a new heuristic to improve the solution of the Unified Vehicle Routing Problem (Unified VRP) by incorporating insights from prior heuristics. The Unified VRP requires finding a set of optimal routes for a fleet of vehicles to serve all given customers, potentially without returning to the depot (open routes). This problem incorporates multiple constraints: firstly, capacity limits where each customer has a demand (including backhauls for pickups and deliveries), and the total cannot exceed vehicle capacity; secondly, time windows where each customer must be visited within a specific interval defined by an earliest and latest possible service time; and thirdly, duration limits ensuring the total route length or time does not exceed preset thresholds. The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated, Time Windows, Backhauls, open routes and duration limits. The objective is to minimize the total travel distance or time while adhering to all capacity, time window, backhaul, open route, and duration constraints.
+
+[2025-09-14 22:03:34,706][root][INFO] - Function name: heuristics
+[2025-09-14 22:03:34,707][root][INFO] - Evaluating seed function...
+[2025-09-14 22:03:34,707][root][INFO] - Seed function code: 
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    return current_distance_matrix
+[2025-09-14 22:03:34,707][root][INFO] - Iteration 0: Running Code 0
+[2025-09-14 22:03:38,719][root][INFO] - Iteration 0: Code Run 0 execution error!

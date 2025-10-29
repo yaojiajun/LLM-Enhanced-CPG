@@ -1,0 +1,33 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Initialize the heuristic scores matrix
+    q, n = current_distance_matrix.size()
+    heuristic_scores = torch.zeros((q, n), device=current_distance_matrix.device)
+
+    # Calculate feasible visits based on capacity and delivery demands
+    feasible_delivery = (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0)) & (current_load.unsqueeze(1) >= delivery_node_demands_open.unsqueeze(0))
+    feasible_pickup = (current_load_open.unsqueeze(1) >= pickup_node_demands.unsqueeze(0))
+    
+    # Calculate time window feasibility
+    arrival_time_windows = (arrival_times.unsqueeze(1) >= time_windows[:, 0].unsqueeze(0)) & (arrival_times.unsqueeze(1) <= time_windows[:, 1].unsqueeze(0))
+    
+    # Combine feasibility constraints
+    feasible_routes = feasible_delivery & feasible_pickup & arrival_time_windows
+
+    # Calculate heuristic costs based on distance
+    distance_scores = -current_distance_matrix * feasible_routes.float()  # negative distance for heuristic scoring
+    
+    # Incorporate randomness into the heuristic score
+    noise = torch.rand_like(distance_scores) * 0.1  # moderate noise to promote exploration
+    stochastic_scores = distance_scores + noise
+    
+    # Apply the score based on remaining length constraints
+    within_length_constraints = (current_length.unsqueeze(1) >= current_distance_matrix) & feasible_routes
+    stochastic_scores[~within_length_constraints] += float('-inf')  # penalize infeasible routes
+
+    # Return the final heuristic score matrix
+    return stochastic_scores
+```

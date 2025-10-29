@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/routefinder/models/__init__.py", line 1, in <module>
+    from .model import RouteFinderBase, RouteFinderMoE, RouteFinderSingleVariantSampling
+  File "/root/autodl-tmp/yao/Hercules/problems/mt_routefinder_unified/routefinder/models/model.py", line 7, in <module>
+    from rl4co.models.zoo.pomo import POMO
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/models/__init__.py", line 23, in <module>
+    from rl4co.models.zoo.active_search import ActiveSearch
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/models/zoo/__init__.py", line 5, in <module>
+    from rl4co.models.zoo.am import AttentionModel, AttentionModelPolicy
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/models/zoo/am/__init__.py", line 1, in <module>
+    from .model import AttentionModel
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/models/zoo/am/model.py", line 4, in <module>
+    from rl4co.models.zoo.am.policy import AttentionModelPolicy
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/models/zoo/am/policy.py", line 6, in <module>
+    from rl4co.models.zoo.am.decoder import AttentionModelDecoder
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/rl4co/models/zoo/am/decoder.py", line 247
+    if delivery_node_demands[ ,:-20] >= 0:
+                              ^
+SyntaxError: invalid syntax

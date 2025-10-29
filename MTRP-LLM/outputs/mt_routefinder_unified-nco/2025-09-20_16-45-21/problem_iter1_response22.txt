@@ -1,0 +1,43 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Constants
+    epsilon = 1e-8
+    # Inputs' specifics
+    num_vehicles = current_distance_matrix.size(0)
+    num_nodes = current_distance_matrix.size(1)
+
+    # Initializations
+    scores = torch.zeros((num_vehicles, num_nodes), device=current_distance_matrix.device)
+
+    # Validity masks for checking feasibility of loads and time windows
+    delivery_capacity_mask = (current_load.view(num_vehicles, 1) >= delivery_node_demands.view(1, num_nodes)).unsqueeze(-1)
+    open_route_capacity_mask = (current_load_open.view(num_vehicles, 1) >= delivery_node_demands_open.view(1, num_nodes)).unsqueeze(-1)
+    
+    # Time windows feasibility
+    time_window_mask = (arrival_times.view(num_vehicles, 1, num_nodes) + current_distance_matrix <= time_windows[:, 1].view(1, -1, 1)) & \
+                       (arrival_times.view(num_vehicles, 1, num_nodes) + current_distance_matrix >= time_windows[:, 0].view(1, -1, 1))
+
+    # Duration limits check
+    duration_mask = (current_length.view(num_vehicles, 1) - current_distance_matrix >= -epsilon)
+
+    # Combined feasibility mask
+    feasibility_mask = delivery_capacity_mask & time_window_mask & duration_mask & open_route_capacity_mask
+
+    # Heuristic scoring mechanism
+    effective_time_matrix = (current_distance_matrix + epsilon)
+    
+    delivery_score = scores.new_ones((num_vehicles, num_nodes)) * (1 / (effective_time_matrix + epsilon))
+    invalid_scores = torch.log1p(-feasibility_mask.float())  # Applying log to make negatives for infeasibility
+    scores += (delivery_score + invalid_scores)
+
+    # Adding randomness to encourage exploration within promising nodes
+    random_scores = torch.randn(scores.size(), device=scores.device) * 0.01
+    scores += random_scores
+
+    # Clamping scores to ensure they're finite and avoiding potential divergences
+    scores = torch.clamp(scores, min=float('-inf'), max=float('inf'))
+
+    return torch.nan_to_num(scores)  # Ensure all outputs are finite
+```

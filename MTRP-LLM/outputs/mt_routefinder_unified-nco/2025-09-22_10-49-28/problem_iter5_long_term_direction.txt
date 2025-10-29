@@ -1,0 +1,1 @@
+Integrate diversified penalty functions, balanced demand prioritization, and controlled randomness effectively. Experiment with higher-order penalties, refined weights, and noise levels for exploration and load balancing in Unified VRP.

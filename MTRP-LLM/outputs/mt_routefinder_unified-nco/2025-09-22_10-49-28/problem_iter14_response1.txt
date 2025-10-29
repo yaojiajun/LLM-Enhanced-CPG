@@ -1,0 +1,41 @@
+```python
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Compute open delivery node scores
+    open_delivery_scores = torch.abs(delivery_node_demands_open.unsqueeze(0) - current_load_open.unsqueeze(1)) * 1.5 + torch.randn_like(
+        current_distance_matrix) * 0.3
+
+    # Update the ovrp_scores calculation to integrate open delivery scores
+    pomo_size, N = cvrp_scores.shape
+
+    noise_scale_factors_1 = (0.5 + 0.5 * torch.rand((pomo_size, 1))) * (
+                1 + 0.5 * torch.randn((pomo_size, N)).clamp(-1, 1)) * (
+                                         0.8 + 0.2 * torch.rand((pomo_size, N)))
+    noise_scale_factors_2 = (0.6 + 0.4 * torch.rand((pomo_size, 1))) * (
+                1 + 0.6 * torch.randn((pomo_size, N)).clamp(-1, 1)) * (
+                                         0.9 + 0.1 * torch.rand((pomo_size, N)))
+    noise_scale_factors_3 = (0.4 + 0.6 * torch.rand((pomo_size, 1))) * (
+                1 + 0.4 * torch.randn((pomo_size, N)).clamp(-1, 1)) * (
+                                         0.7 + 0.3 * torch.rand((pomo_size, N)))
+
+    # Dynamic demand sensitivity adjustment with broader scaling based on load and 'open_delivery_scores' with additional noise pattern
+    demand_sensitivity = (open_delivery_scores / current_load_open.unsqueeze(1).clamp(min=1e-6)) * \
+                         (1 + 0.5 * torch.rand((pomo_size, N))).clamp(0.1, 3.0)
+
+    # Enhanced global variation for increased randomness combined with 'open_delivery_scores' and multiplied noise patterns
+    global_variation = (0.5 + 0.5 * torch.rand((pomo_size, 1))) * \
+                       (current_load_open.unsqueeze(1) * (torch.randn((pomo_size, N)).clamp(-1, 1)))
+
+    # Adaptive scaling factor influenced by delivery demands for enhanced compensation
+    adaptive_scale_factor = (0.8 + 0.2 * torch.rand((pomo_size, 1)))
+
+    # Calculate the updated ovrp_compensation with diversified randomness, dynamic scaling, and 'open_delivery_scores'
+    ovrp_compensation = (noise_scale_factors_1 + noise_scale_factors_2 + noise_scale_factors_3 +
+                         global_variation) * (demand_sensitivity * adaptive_scale_factor)
+
+    # Final ovrp_scores calculation with updated components
+    ovrp_scores = ovrp_compensation
+
+    overall_scores = cvrp_scores + vrptw_scores + vrpb_scores + vrpl_scores + ovrp_scores
+
+    return overall_scores
+```

@@ -1,0 +1,11 @@
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    # Example advanced heuristic computations
+    score1 = torch.sigmoid(current_distance_matrix) ** 2
+    score2 = torch.tanh(torch.cos(current_distance_matrix))
+    score3 = torch.abs(torch.randn_like(current_distance_matrix)) * 5
+
+    heuristic_scores = (score1 + score2) * score3
+
+    return heuristic_scores

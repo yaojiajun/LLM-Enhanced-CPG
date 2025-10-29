@@ -1,0 +1,47 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+
+    # Initialization of the heuristic score matrix
+    pomo_size, N_plus_1 = current_distance_matrix.shape
+    heuristic_scores = torch.zeros((pomo_size, N_plus_1), device=current_distance_matrix.device)
+
+    # Calculate feasibility masks for capacity and time windows
+    capacity_mask = (current_load.unsqueeze(1) >= delivery_node_demands[:-1]).float()  # Up to index N
+    capacity_mask_open = (current_load_open.unsqueeze(1) >= delivery_node_demands_open[:-1]).float()
+    
+    time_mask = (arrival_times <= time_windows[:, 1].unsqueeze(0)).float() * \
+                (arrival_times >= time_windows[:, 0].unsqueeze(0)).float()
+    
+    total_capacity_mask = capacity_mask * time_mask
+    total_capacity_mask_open = capacity_mask_open * time_mask
+
+    # Calculate base distance score adjusted by capacity
+    base_distance_score = -current_distance_matrix * total_capacity_mask  # negative for minimization
+    base_distance_score_open = -current_distance_matrix * total_capacity_mask_open
+
+    # Evaluate remaining capacity and length effects
+    load_effect = (torch.exp(-torch.abs(delivery_node_demands[:-1][None, :] - current_load.unsqueeze(1))) * total_capacity_mask)
+    load_effect_open = (torch.exp(-torch.abs(delivery_node_demands_open[:-1][None, :] - current_load_open.unsqueeze(1))) * total_capacity_mask_open)
+
+    # Add randomness with introduced noise to guide exploration
+    noise = torch.randn_like(base_distance_score) * 0.1
+
+    # Asymptotic boosting applied to promising edges and relevant capacities
+    heuristic_scores += (base_distance_score + load_effect + noise)
+    heuristic_scores_open = (base_distance_score_open + load_effect_open + noise)
+
+    # Merging score contributions while considering deadlines and reducing into a single heuristic score
+    heuristic_scores = heuristic_scores + heuristic_scores_open * 0.5  # give more weight to the more feasible options
+    
+    return heuristic_scores
+```

@@ -1,0 +1,50 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor,
+                  delivery_node_demands: torch.Tensor,
+                  current_load: torch.Tensor,
+                  delivery_node_demands_open: torch.Tensor,
+                  current_load_open: torch.Tensor,
+                  time_windows: torch.Tensor,
+                  arrival_times: torch.Tensor,
+                  pickup_node_demands: torch.Tensor,
+                  current_length: torch.Tensor) -> torch.Tensor:
+
+    # Initialize the score matrix
+    num_vehicles, num_nodes = current_distance_matrix.shape
+    score_matrix = torch.zeros((num_vehicles, num_nodes))
+
+    # Compute time window feasibility
+    earliest_service_times = time_windows[:, 0]
+    latest_service_times = time_windows[:, 1]
+
+    # Penalize services outside time window
+    valid_time_window = (arrival_times < latest_service_times.unsqueeze(0)) & (arrival_times > earliest_service_times.unsqueeze(0))
+    time_penalty = 1 - valid_time_window.float()
+    
+    # Reduce scores based on time penalties
+    score_matrix -= 10 * time_penalty  # Arbitrary assumption to greatly decrease score for time window violations
+
+    # Check feasibility of deliveries based on remaining load
+    feasible_deliveries = (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0)).float()
+    score_matrix += feasible_deliveries
+
+    # Factor in load capacity constraints for backhauls as well
+    feasible_backhauls = (current_load_open.unsqueeze(1) >= pickup_node_demands.unsqueeze(0)).float()
+    score_matrix += feasible_backhauls
+
+    # Duration limit feasibility
+    duration_penalty = (current_length.unsqueeze(1) < current_distance_matrix).float()
+    score_matrix -= 5 * duration_penalty  # Slight reduction for exceeding length budgets
+
+    # Normalize the current distances to avoid excessive reliance on just proximity
+    normalized_distances = current_distance_matrix / current_distance_matrix.sum(dim=1, keepdim=True)
+
+    # Introduce randomness to guide exploration and mitigate local optima convergence
+    randomness = torch.rand(num_vehicles, num_nodes) * 0.1  # Random factors between 0 and 0.1
+    braved_score_matrix = score_matrix + randomness
+
+    # After modifying the score matrix with considerations and randomness, return the resultant score matrix.
+    return braved_score_matrix
+```

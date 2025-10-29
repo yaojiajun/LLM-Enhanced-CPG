@@ -1,0 +1,19 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # cvrp_scores
+    # Modify the distance-based heuristic score matrix by emphasizing shorter distances and adjusting randomness
+    modified_distance_scores = -1 / (current_distance_matrix + 1e-6) + torch.randn_like(current_distance_matrix) * 0.5
+   
+    # Emphasize on the demand deficit rather than total demand for a balance in load management
+    demand_deficit_scores = torch.clamp((delivery_node_demands - current_load).unsqueeze(0), min=0) * 0.5 + torch.randn_like(current_distance_matrix) * 0.3
+    
+    # Combine modified distance scores and demand deficit scores for the final cvrp_scores
+    cvrp_scores = modified_distance_scores + demand_deficit_scores
+
+    # Keep the logic for other parts of the function unchanged
+    # Return the overall_scores combining all heuristic indicators
+    overall_scores = cvrp_scores
+    return overall_scores
+```

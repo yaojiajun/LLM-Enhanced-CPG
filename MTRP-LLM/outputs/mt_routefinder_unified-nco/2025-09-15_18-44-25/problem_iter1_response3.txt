@@ -1,0 +1,47 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, 
+                  delivery_node_demands: torch.Tensor, 
+                  current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, 
+                  current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, 
+                  current_length: torch.Tensor) -> torch.Tensor:
+
+    # Initialize the score matrix
+    scores = torch.zeros_like(current_distance_matrix, dtype=torch.float32)
+
+    # Constraints for remaining load
+    capacity_constraint = (current_load.unsqueeze(1) >= delivery_node_demands) & (current_load_open.unsqueeze(1) >= delivery_node_demands_open)
+    # Constraints for time windows
+    time_window_constraint = (arrival_times.unsqueeze(1) >= time_windows[:, 0]) & (arrival_times.unsqueeze(1) <= time_windows[:, 1])
+
+    # Generate preliminary scores based on distance matrix (negative distance implies better delivery options)
+    distance_scores = -current_distance_matrix
+
+    # Set high negative scores for infeasible delivery nodes
+    scores[~capacity_constraint] = -float('inf')
+    scores[~time_window_constraint] = -float('inf')
+    
+    # Select a subset of feasible scores while incorporating some randomness to enhance exploration
+    randomness = torch.rand_like(scores) * 0.1  # Small randomness factor
+    
+    # Create the final heuristic scores combining the penalties and preparatory makings
+    scores += distance_scores + randomness
+
+    # Integrate demand-to-distance ratio for prioritizing vehicle usage correctly
+    delivery_ratio = (delivery_node_demands / (current_distance_matrix + 1e-6))
+    pickup_ratio = (pickup_node_demands / (current_distance_matrix + 1e-6))
+    
+    scores += delivery_ratio
+    scores += pickup_ratio
+
+    # Apply route duration limits
+    duration_constraint = current_length.unsqueeze(1) >= current_distance_matrix
+    scores[~duration_constraint] = -float('inf')
+
+    return scores
+```

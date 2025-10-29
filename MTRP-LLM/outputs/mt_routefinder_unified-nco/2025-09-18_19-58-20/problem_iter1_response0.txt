@@ -1,0 +1,35 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor,
+                  delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, 
+                  arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    # Compute feasible routes based on capacity constraints for deliveries
+    delivery_capacity_check = (current_load.unsqueeze(1) - delivery_node_demands.unsqueeze(0)) >= 0
+    
+    # Compute feasible routes based on open route capacity constraints
+    open_capacity_check = (current_load_open.unsqueeze(1) - delivery_node_demands_open.unsqueeze(0)) >= 0
+    
+    # Calculate time windows feasibility here
+    time_window_earliest = (arrival_times.unsqueeze(1) < time_windows[:, 1].unsqueeze(0))
+    time_window_latest = (arrival_times.unsqueeze(1) >= time_windows[:, 0].unsqueeze(0))
+    
+    time_window_check = time_window_earliest & time_window_latest
+
+    # Evaluate travel times for pickup demands under the same constraints
+    pickup_capacity_check = (current_load.unsqueeze(1) + pickup_node_demands.unsqueeze(0)) <= current_length.unsqueeze(1)
+
+    # Combine criteria to ascertain feasibility for both deliveries and pickups
+    feasible_routes = delivery_capacity_check & time_window_check & pickup_capacity_check & open_capacity_check
+    
+    # Calculate heuristic scores based on total distance for feasible moves only
+    # Use torch.where to avoid using explicit loops and enhance performance on GPU
+    heuristic_scores = torch.where(feasible_routes, -current_distance_matrix, torch.tensor(float('-inf')))
+
+    # Introduce randomness for exploration to avoid local optima
+    random_exploration = torch.rand_like(heuristic_scores) * feasible_routes.float()
+    heuristic_scores += random_exploration * torch.tensor(1e-2)  # Small random value
+
+    return heuristic_scores
+```

@@ -1,0 +1,29 @@
+```python
+import torch
+import torch.nn.functional as F
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    # Calculate distance factors
+    distance_factors = torch.exp(-current_distance_matrix)
+    
+    # Calculate load factors based on current load and demands
+    load_factors = torch.relu(delivery_node_demands - current_load) / delivery_node_demands
+    
+    # Calculate open load factors based on current open load and demands
+    open_load_factors = torch.relu(delivery_node_demands_open - current_load_open) / delivery_node_demands_open
+    
+    # Calculate time window penalties
+    window_lower_bound = time_windows[:, 0].unsqueeze(0).t()
+    window_upper_bound = time_windows[:, 1].unsqueeze(0).t()
+    late_penalty = torch.relu(arrival_times - window_upper_bound)
+    early_penalty = torch.relu(window_lower_bound - arrival_times)
+    time_window_factors = 1 / (1 + torch.exp(1.0 * (late_penalty + early_penalty)))
+    
+    # Calculate pickup load factors based on pickup demands
+    pickup_load_factors = torch.relu(pickup_node_demands - current_load) / pickup_node_demands
+    
+    # Combine all factors into a total heuristic score matrix
+    heuristic_scores = distance_factors * load_factors * open_load_factors * time_window_factors * pickup_load_factors
+    return  heuristic_scores
+
+```

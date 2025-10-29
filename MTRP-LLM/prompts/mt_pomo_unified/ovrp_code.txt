@@ -1,0 +1,15 @@
+1:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+    demand_score = (2.2 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    noise_uniform = 0.9 * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)  # Further increased randomness for exploration
+    noise_normal = 0.5 * torch.randn_like(inverse_distance_score)  # Enhanced normal noise for diversity
+
+    multiplicative_factor = 1 + 0.3 * torch.rand_like(inverse_distance_score)  # Optimized randomness for better exploration
+
+    additive_factor = 0.02 * torch.randn_like(inverse_distance_score)  # Fine-tuned level of additive noise
+
+    ovrp_scores = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.07) * (1 + additive_factor)  # Combined heuristic score with increased randomness
+
+    return ovrp_scores

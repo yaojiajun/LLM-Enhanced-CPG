@@ -1,0 +1,4 @@
+_target_: utils.llm_client.openai.OpenAIClient
+model: gemini-2.5-pro
+temperature: 1.0
+api_key: ${oc.env:OPENAI_API_KEY,null}

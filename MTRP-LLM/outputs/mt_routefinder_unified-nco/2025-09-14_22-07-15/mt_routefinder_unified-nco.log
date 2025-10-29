@@ -1,0 +1,163 @@
+[2025-09-14 22:07:15,103][root][INFO] - Workspace: /root/autodl-tmp/yao/Hercules/outputs/mt_routefinder_unified-nco/2025-09-14_22-07-15
+[2025-09-14 22:07:15,103][root][INFO] - Project Root: /root/autodl-tmp/yao/Hercules
+[2025-09-14 22:07:15,103][root][INFO] - Using LLM: gpt-3.5-turbo
+[2025-09-14 22:07:15,103][root][INFO] - Using Algorithm: hercules
+[2025-09-14 22:07:16,819][root][INFO] - Running until 10 improvements are found
+[2025-09-14 22:07:16,819][root][INFO] - Problem: mt_routefinder_unified
+[2025-09-14 22:07:16,820][root][INFO] - Problem description: I need assistance in designing a new heuristic to improve the solution of the Unified Vehicle Routing Problem (Unified VRP) by incorporating insights from prior heuristics. The Unified VRP requires finding a set of optimal routes for a fleet of vehicles to serve all given customers, potentially without returning to the depot (open routes). This problem incorporates multiple constraints: firstly, capacity limits where each customer has a demand (including backhauls for pickups and deliveries), and the total cannot exceed vehicle capacity; secondly, time windows where each customer must be visited within a specific interval defined by an earliest and latest possible service time; and thirdly, duration limits ensuring the total route length or time does not exceed preset thresholds. The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated, Time Windows, Backhauls, open routes and duration limits. The objective is to minimize the total travel distance or time while adhering to all capacity, time window, backhaul, open route, and duration constraints.
+
+[2025-09-14 22:07:16,820][root][INFO] - Function name: heuristics
+[2025-09-14 22:07:16,820][root][INFO] - Evaluating seed function...
+[2025-09-14 22:07:16,820][root][INFO] - Seed function code: 
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    return current_distance_matrix
+[2025-09-14 22:07:16,820][root][INFO] - Iteration 0: Running Code 0
+[2025-09-14 22:07:20,411][root][INFO] - Iteration 0: Code Run 0 successful!
+[2025-09-14 22:07:34,297][root][INFO] - Iteration 0, response_id 0: Objective value: 10.627174377441406
+[2025-09-14 22:07:34,298][root][INFO] - Iteration 0: Elitist: 10.627174377441406
+[2025-09-14 22:07:34,298][root][INFO] - Iteration 0 finished...
+[2025-09-14 22:07:34,298][root][INFO] - Best obj: 10.627174377441406, Best Code Path: problem_iter0_code0.py
+[2025-09-14 22:07:34,298][root][INFO] - Function Evals: 1
+[2025-09-14 22:07:34,298][root][INFO] - Initial Population Prompt: 
+System Prompt: 
+You are an expert in the domain of optimization heuristics. Your task is to design heuristics that can effectively solve optimization problems.
+Your response outputs Python code and nothing else. Format your code as a Python code string: "```python ... ```".
+
+User Prompt: 
+Write a heuristics function for I need assistance in designing a new heuristic to improve the solution of the Unified Vehicle Routing Problem (Unified VRP) by incorporating insights from prior heuristics. The Unified VRP requires finding a set of optimal routes for a fleet of vehicles to serve all given customers, potentially without returning to the depot (open routes). This problem incorporates multiple constraints: firstly, capacity limits where each customer has a demand (including backhauls for pickups and deliveries), and the total cannot exceed vehicle capacity; secondly, time windows where each customer must be visited within a specific interval defined by an earliest and latest possible service time; and thirdly, duration limits ensuring the total route length or time does not exceed preset thresholds. The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated, Time Windows, Backhauls, open routes and duration limits. The objective is to minimize the total travel distance or time while adhering to all capacity, time window, backhaul, open route, and duration constraints.
+
+The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated, Time Windows, Backhauls, open routes and duration limits.
+
+
+The inputs are:
+
+current_distance_matrix: Tensor (pomo_size, N+1), the distance matrix from the current node to all other nodes.
+
+delivery_node_demands: Tensor (N+1) – Delivery demand at each node; used to assess whether the vehicle has sufficient remaining load to deliver.
+
+current_load: Tensor (pomo_size) – Remaining capacity of the vehicle at each trajectory. This is used to determine whether visiting a node is feasible under the current load constraints.
+
+delivery_node_demands_open: Tensor (N+1) – Delivery demand at each node; used to assess whether the vehicle has sufficient remaining load to deliver.
+
+current_load_open: Tensor (pomo_size) – Remaining capacity of the vehicle at each trajectory. This is used to determine whether visiting a node is feasible under the current load constraints.
+
+time_windows: Tensor (N+1, 2) – Earliest and latest allowed service times at each node. Used to evaluate time window feasibility and waiting time computation.
+
+arrival_times: Tensor (pomo_size, N+1) – Estimated arrival times at the next node for each trajectory from the current node position.
+
+pickup_node_demands: Tensor (N+1) – Pickup demand at each node, used to evaluate if the vehicle has sufficient capacity to collect.
+
+current_length: Tensor (pomo_size) –Remaining route duration (length) budget of the vehicle at each trajectory. This is used to determine whether visiting a node is feasible under the current length constraints, ensuring the total route length does not exceed preset thresholds.
+
+Output:
+
+The function returns a heuristic score matrix of shape (pomo_size, N+1), assigning positive scores to promising edges and negative scores to undesirable edges.
+
+Implementation Requirements:
+Fully vectorized implementation for optimized GPU execution.
+Efficient computation avoiding explicit loops or slow operations.
+Designed specifically for rapid evaluation in batched GPU-based VRP solving under the POMO framework.
+Introduce enhanced randomness to avoid convergence to local optima.
+
+import torch
+def heuristics_v1(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    return current_distance_matrix
+
+
+Refer to the format of a trivial design above. Be very creative and give `heuristics_v2`. Output code only and enclose your code with Python code block: ```python ... ```.
+
+
+[2025-09-14 22:07:38,314][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:07:41,323][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:07:41,326][root][INFO] - Iteration 1 code code code...
+[2025-09-14 22:07:43,322][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:07:43,324][root][INFO] - Iteration 2 code code code...
+[2025-09-14 22:07:46,941][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:07:46,944][root][INFO] - Iteration 3 code code code...
+[2025-09-14 22:07:49,315][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:07:49,317][root][INFO] - Iteration 4 code code code...
+[2025-09-14 22:07:53,441][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:07:53,446][root][INFO] - Iteration 5 code code code...
+[2025-09-14 22:07:54,229][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+[2025-09-14 22:07:54,231][openai._base_client][INFO] - Retrying request to /chat/completions in 0.455463 seconds
+[2025-09-14 22:07:54,877][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+[2025-09-14 22:07:54,878][openai._base_client][INFO] - Retrying request to /chat/completions in 0.780653 seconds
+[2025-09-14 22:07:55,849][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+[2025-09-14 22:07:55,850][utils.llm_client.base][ERROR] - no healthy upstream
+Traceback (most recent call last):
+  File "/root/autodl-tmp/yao/Hercules/utils/llm_client/base.py", line 31, in chat_completion
+    response_cur = self._chat_completion_api(messages, temperature, n)
+  File "/root/autodl-tmp/yao/Hercules/utils/llm_client/openai.py", line 33, in _chat_completion_api
+    response = self.client.chat.completions.create(
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/openai/_utils/_utils.py", line 286, in wrapper
+    return func(*args, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/openai/resources/chat/completions/completions.py", line 1147, in create
+    return self._post(
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/openai/_base_client.py", line 1259, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/openai/_base_client.py", line 1047, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.InternalServerError: no healthy upstream
+[2025-09-14 22:07:55,853][utils.llm_client.base][INFO] - Attempt 1 failed with error: no healthy upstream
+[2025-09-14 22:08:02,288][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:02,290][root][INFO] - Iteration 1 code code code...
+[2025-09-14 22:08:06,054][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:06,056][root][INFO] - Iteration 2 code code code...
+[2025-09-14 22:08:07,930][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:07,932][root][INFO] - Iteration 3 code code code...
+[2025-09-14 22:08:09,979][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:09,982][root][INFO] - Iteration 4 code code code...
+[2025-09-14 22:08:14,047][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:14,050][root][INFO] - Iteration 5 code code code...
+[2025-09-14 22:08:18,924][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:18,928][root][INFO] - Iteration 1 code code code...
+[2025-09-14 22:08:24,469][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:24,472][root][INFO] - Iteration 2 code code code...
+[2025-09-14 22:08:28,574][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:28,576][root][INFO] - Iteration 3 code code code...
+[2025-09-14 22:08:32,254][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:32,256][root][INFO] - Iteration 4 code code code...
+[2025-09-14 22:08:34,717][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:34,719][root][INFO] - Iteration 5 code code code...
+[2025-09-14 22:08:37,262][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:37,264][root][INFO] - Iteration 1 code code code...
+[2025-09-14 22:08:39,270][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:39,272][root][INFO] - Iteration 2 code code code...
+[2025-09-14 22:08:42,953][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:42,956][root][INFO] - Iteration 3 code code code...
+[2025-09-14 22:08:47,586][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:47,588][root][INFO] - Iteration 4 code code code...
+[2025-09-14 22:08:55,821][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:55,823][root][INFO] - Iteration 5 code code code...
+[2025-09-14 22:08:58,442][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:08:58,445][root][INFO] - Iteration 1 code code code...
+[2025-09-14 22:09:00,465][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:09:00,467][root][INFO] - Iteration 2 code code code...
+[2025-09-14 22:09:03,994][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:09:03,997][root][INFO] - Iteration 3 code code code...
+[2025-09-14 22:09:07,837][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:09:07,840][root][INFO] - Iteration 4 code code code...
+[2025-09-14 22:09:10,141][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-14 22:09:10,144][root][INFO] - Iteration 5 code code code...
+[2025-09-14 22:09:10,144][root][INFO] - Iteration 1: Running Code 0
+[2025-09-14 22:09:14,182][root][INFO] - Iteration 1: Code Run 0 successful!
+[2025-09-14 22:09:14,183][root][INFO] - Iteration 1: Running Code 1
+[2025-09-14 22:09:18,232][root][INFO] - Iteration 1: Code Run 1 successful!
+[2025-09-14 22:09:18,232][root][INFO] - Iteration 1: Running Code 2
+[2025-09-14 22:09:22,683][root][INFO] - Iteration 1: Code Run 2 successful!
+[2025-09-14 22:09:22,684][root][INFO] - Iteration 1: Running Code 3
+[2025-09-14 22:09:26,119][root][INFO] - Iteration 1: Code Run 3 successful!
+[2025-09-14 22:09:26,120][root][INFO] - Iteration 1: Running Code 4
+[2025-09-14 22:09:30,339][root][INFO] - Iteration 1: Code Run 4 successful!
+[2025-09-14 22:09:50,846][root][INFO] - Iteration 1, response_id 0: Objective value: inf
+[2025-09-14 22:09:50,846][root][INFO] - Iteration 1, response_id 1: Objective value: inf
+[2025-09-14 22:09:50,846][root][INFO] - Iteration 1, response_id 2: Objective value: inf
+[2025-09-14 22:09:50,846][root][INFO] - Iteration 1, response_id 3: Objective value: inf
+[2025-09-14 22:09:50,846][root][INFO] - Iteration 1, response_id 4: Objective value: 10.593231201171875
+[2025-09-14 22:09:50,847][root][INFO] - Iteration 1: Elitist: 10.593231201171875
+[2025-09-14 22:09:50,847][root][INFO] - Iteration 1 finished...
+[2025-09-14 22:09:50,847][root][INFO] - Best obj: 10.593231201171875, Best Code Path: problem_iter1_code4.py
+[2025-09-14 22:09:50,847][root][INFO] - Function Evals: 6

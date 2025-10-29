@@ -1,0 +1,37 @@
+import torch
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, 
+                  delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, 
+                  time_windows: torch.Tensor, arrival_times: torch.Tensor, 
+                  pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    
+    N = current_distance_matrix.shape[1]
+    pomo_size = current_distance_matrix.shape[0]
+    
+    # Heuristic score matrix initialization
+    heuristic_scores = torch.zeros((pomo_size, N))
+
+    # Calculate capacity feasibility conditions
+    delivery_capacity_met = (current_load.unsqueeze(1) >= delivery_node_demands.unsqueeze(0))
+    pickup_capacity_met = (current_load_open.unsqueeze(1) >= pickup_node_demands.unsqueeze(0))
+    
+    # Calculate time window feasibility
+    current_time = arrival_times + current_distance_matrix
+    time_window_met = (current_time >= time_windows[:, 0].unsqueeze(0)) & (current_time <= time_windows[:, 1].unsqueeze(0))
+    
+    # Total feasibilities
+    feasible_routes = delivery_capacity_met & pickup_capacity_met & time_window_met
+    
+    # Penalty applied on infeasible routes
+    heuristic_scores[~feasible_routes] = -1000  # burden upon poor paths
+
+    # Calculate base distance and a form of inverse cost (penalizing further routes)
+    distance_scores = 1 - (current_distance_matrix / torch.max(current_distance_matrix, dim=1, keepdim=True).values)
+    heuristic_scores += distance_scores * feasible_routes.float() 
+    
+    # Randomness mechanism to add exploration
+    randomness = torch.rand((pomo_size, N)) * (1 - feasible_routes.float())  # random scores for blocked paths
+    heuristic_scores += randomness
+
+    return heuristic_scores

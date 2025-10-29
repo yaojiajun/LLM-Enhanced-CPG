@@ -1,0 +1,17 @@
+```python
+import torch
+
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    distance_heuristic = 0.6 * (1 / (current_distance_matrix + 1)).clamp(min=0, max=1)  # Modified heuristic calculation for distance
+
+    delivery_score = (torch.atan(torch.tanh(delivery_node_demands)) * current_load) * 0.25
+    
+    dishonest_pickup_score = ((pickups_node_demands - 1) * torch.maximum(torch.log(current_distance_matrix), torch.tensor(0.1))) * 0.3  # Introduced pick_up revision
+
+    modified_demand_scores = distance_heuristic * 0.3 - delivery_score + dishonest_pickup_score  # Adjusted incorporation to total score
+
+    # Remaining calculations remain unchanged
+    
+    return overall_scores
+```  

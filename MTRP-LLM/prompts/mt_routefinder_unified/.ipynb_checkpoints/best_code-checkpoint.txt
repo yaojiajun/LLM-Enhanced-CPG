@@ -1,0 +1,23 @@
+import torch
+def heuristics_v1(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+    mutated_distance_scores = -1.8 * torch.sin(current_distance_matrix * 1.6) + torch.randn_like(current_distance_matrix) * 0.3
+    adjusted_delivery_demand = 1.3 * delivery_node_demands.unsqueeze(0).float() + 0.9 * current_load.unsqueeze(1).float()  # Changed weight from 1.1 to 0.9
+    delivery_score = (current_load.unsqueeze(1) / (adjusted_delivery_demand + 1.0)) * 0.7
+    adjusted_load = current_load.unsqueeze(1).float() + 1.0 * current_distance_matrix - 1.2 * delivery_node_demands.unsqueeze(0).float()
+    load_adjustment_penalty = (adjusted_load / adjusted_load.max(dim=1).values.unsqueeze(1)).clamp(max=0.7) * 0.5
+    
+    open_score_factor = 0.7 * (1.0 - (current_load_open.unsqueeze(1) / (delivery_node_demands_open.unsqueeze(0) + 1e-5)))  
+    open_delivery_score_v5 = open_score_factor * (delivery_node_demands_open.unsqueeze(0) - current_load_open.unsqueeze(1)).clamp(min=0) - 0.5 * current_distance_matrix
+    
+    length_score_v6 = current_length.unsqueeze(1) * torch.sin(current_distance_matrix) - torch.sqrt(current_distance_matrix) * 1.4
+    
+    pickup_demand_factor_v8 = 0.6 * pickup_node_demands.unsqueeze(0).float() - 0.4 * current_length.unsqueeze(1).float()
+    pickup_score_v8 = (current_load.unsqueeze(1) / (pickup_demand_factor_v8 + 1.4)) * 0.3
+    
+    arrival_penalty_start = (arrival_times - time_windows[:, 0].unsqueeze(0)) * 2.5
+    arrival_penalty_end = (arrival_times - time_windows[:, 1].unsqueeze(0)) * 0.2
+    time_score_v8 = 1.8 - torch.clamp(arrival_penalty_start, min=0) - torch.clamp(arrival_penalty_end, min=0)
+    
+    modified_score = mutated_distance_scores + delivery_score - load_adjustment_penalty + open_delivery_score_v5 + time_score_v8 + length_score_v6 - pickup_score_v8
+    
+    return modified_score

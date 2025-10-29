@@ -1,0 +1,166 @@
+1:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+    demand_score = (2.2 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    noise_uniform = 0.9 * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)  # Further increased randomness for exploration
+    noise_normal = 0.5 * torch.randn_like(inverse_distance_score)  # Enhanced normal noise for diversity
+
+    multiplicative_factor = 1 + 0.3 * torch.rand_like(inverse_distance_score)  # Optimized randomness for better exploration
+
+    additive_factor = 0.02 * torch.randn_like(inverse_distance_score)  # Fine-tuned level of additive noise
+
+    heuristic_score = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.07) * (1 + additive_factor)  # Combined heuristic score with increased randomness
+
+    return heuristic_score
+
+2:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+    demand_score = (2 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    # Enhanced randomness for exploration
+    noise_uniform = 0.8 * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)
+    noise_normal = 0.8 * torch.randn_like(inverse_distance_score)
+
+    # Fine-tuned randomness for exploration and exploitation balance
+    multiplicative_factor = 1 + 0.2 * torch.rand_like(inverse_distance_score)
+
+    # Adjusted additive noise level
+    additive_factor = 0.1 * torch.randn_like(inverse_distance_score)
+
+    # Combined heuristic score with noise
+    heuristic_score = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.1) * (1 + additive_factor)
+
+    return heuristic_score
+
+3:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+    demand_score = (2 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    noise_uniform = 0.9 * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)
+    noise_normal = 0.9 * torch.randn_like(inverse_distance_score)
+
+    multiplicative_factor = 1 + 0.4 * torch.rand_like(inverse_distance_score)
+
+    additive_factor = 0.02 * torch.randn_like(inverse_distance_score)
+
+    exploration_factor = 1 + 0.2 * (torch.rand_like(inverse_distance_score) - 0.5)
+    enhanced_noise = (torch.rand_like(inverse_distance_score) - 0.5) * 0.2
+
+    heuristic_score = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.05) * (1 + additive_factor) * exploration_factor * (1 + enhanced_noise)
+
+    return heuristic_score
+
+4:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+    demand_score = (2.5 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    noise_uniform = 1.0 * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)  # Increased randomness diversity
+    noise_normal = 0.5 * torch.randn_like(inverse_distance_score)  # Fine-tuned normal noise level
+
+    multiplicative_factor = 1 + 0.5 * torch.rand_like(inverse_distance_score)  # Adjusted exploration factor
+
+    additive_factor = 0.02 * torch.randn_like(inverse_distance_score)  # Further optimized additive noise level
+
+    heuristic_score = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.1) * (1 + additive_factor)  # Combine heuristic score with enhanced randomness
+
+    return heuristic_score
+
+5:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+    demand_score = (1.8 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    noise_uniform = 0.8 * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)  # Enhanced randomness for exploration
+    noise_normal = 0.4 * torch.randn_like(inverse_distance_score)  # Increased normal noise for diversity
+
+    multiplicative_factor = 1 + 0.5 * torch.rand_like(inverse_distance_score)  # Fine-tuned randomness for better exploration
+    additive_factor = 0.03 * torch.randn_like(inverse_distance_score)  # Further optimized additive noise level
+
+    heuristic_score = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.07) * (1 + additive_factor)  # Combined heuristic score with noise
+
+    return heuristic_score
+
+6:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+    demand_score = (2.2 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    noise_uniform = 0.8 * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)  # Enhanced randomness for exploration
+    noise_normal = 0.4 * torch.randn_like(inverse_distance_score)  # Increased normal noise for diversity
+
+    multiplicative_factor = 1 + 0.5 * torch.rand_like(inverse_distance_score)  # Fine-tuned randomness for better exploration
+
+    additive_factor = 0.03 * torch.randn_like(inverse_distance_score)  # Further optimized additive noise level
+
+    heuristic_score = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.05) * (1 + additive_factor)  # Combined heuristic score with noise
+
+    return heuristic_score
+
+7:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+    demand_score = (2 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    noise_uniform = torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)  # Enhanced randomness with uniform noise distribution
+    noise_normal = 0.8 * torch.randn_like(inverse_distance_score)  # Normal noise distribution with increased weight
+
+    multiplicative_factor = 1 + 0.6 * torch.rand_like(inverse_distance_score)  # Adjusted randomness level
+
+    additive_factor = 0.1 * torch.randn_like(inverse_distance_score)  # Reduce additive factor for stabilizing exploration
+
+    heuristic_score = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.12) * (1 + additive_factor)  # Fine-tuned parameters for exploration and diversity
+
+    return heuristic_score
+
+8:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+
+    demand_score = (2.5 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    noise_uniform = 0.6 * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)  # More controlled randomness for exploration
+
+    noise_normal = 0.5 * torch.randn_like(inverse_distance_score)  # Slightly increased normal noise for diversity
+
+    multiplicative_factor = 1 + 0.7 * torch.rand_like(inverse_distance_score)  # Increased randomness for better exploration
+
+    additive_factor = 0.05 * torch.randn_like(inverse_distance_score)  # Fine-tuned additive noise level
+
+    heuristic_score = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform * 0.5) * (1 + noise_normal * 0.1) * (1 + additive_factor)  # Combined heuristic score with noise
+
+    return heuristic_score
+
+9:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+
+    # Enhanced randomness for exploration and diversity
+    noise_uniform = 0.6 * torch.rand_like(current_distance_matrix) * torch.rand_like(current_distance_matrix)
+    noise_normal = 0.5 * torch.randn_like(current_distance_matrix)
+
+    # Fine-tuned randomness for better exploration and exploitation
+    multiplicative_factor = 1 + 0.6 * torch.rand_like(current_distance_matrix)
+    additive_factor = 0.02 * torch.randn_like(current_distance_matrix)
+
+    # Combined heuristic score with noise and diversity
+    heuristic_score = (2 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6) + 1 / (current_distance_matrix + 1e-6)
+    heuristic_score = heuristic_score * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.05) * (1 + additive_factor)
+
+    return heuristic_score
+
+10:def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor) -> torch.Tensor:
+    inverse_distance_score = 1 / (current_distance_matrix + 1e-6)
+    demand_score = (2.3 * delivery_node_demands).unsqueeze(0) / (current_load.unsqueeze(1) + 1e-6)
+
+    noise_uniform = 0.5 * torch.rand_like(inverse_distance_score) * torch.rand_like(inverse_distance_score)  # Enhanced randomness for diverse exploration
+    noise_normal = 0.3 * torch.randn_like(inverse_distance_score)  # Fine-tuned normal noise for better convergence
+
+    multiplicative_factor = 1 + 0.6 * torch.rand_like(inverse_distance_score)  # Adjusted exploration-exploitation balance factor
+
+    additive_factor = 0.02 * torch.randn_like(inverse_distance_score)  # Smoother exploration with enhanced additive noise
+
+    heuristic_score = (demand_score + inverse_distance_score) * multiplicative_factor * (1 + noise_uniform) * (1 + noise_normal * 0.05) * (1 + additive_factor)  # Refined heuristic score with noise adjustments
+
+    return heuristic_score

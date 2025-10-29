@@ -1,0 +1,707 @@
+[2025-09-15 17:06:10,698][root][INFO] - Workspace: /root/autodl-tmp/yao/Hercules/outputs/mt_routefinder_unified-nco/2025-09-15_17-06-10
+[2025-09-15 17:06:10,698][root][INFO] - Project Root: /root/autodl-tmp/yao/Hercules
+[2025-09-15 17:06:10,699][root][INFO] - Using LLM: gpt-3.5-turbo
+[2025-09-15 17:06:10,699][root][INFO] - Using Algorithm: hercules
+[2025-09-15 17:06:12,387][root][INFO] - Running until 10 improvements are found
+[2025-09-15 17:06:12,388][root][INFO] - Problem: mt_routefinder_unified
+[2025-09-15 17:06:12,388][root][INFO] - Problem description: I need assistance in designing a new heuristic to improve the solution of the Unified Vehicle Routing Problem (Unified VRP) by incorporating insights from prior heuristics. The Unified VRP requires finding a set of optimal routes for a fleet of vehicles to serve all given customers, potentially without returning to the depot (open routes). This problem incorporates multiple constraints: firstly, capacity limits where each customer has a demand (including backhauls for pickups and deliveries), and the total cannot exceed vehicle capacity; secondly, time windows where each customer must be visited within a specific interval defined by an earliest and latest possible service time; and thirdly, duration limits ensuring the total route length or time does not exceed preset thresholds. The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated, Time Windows, Backhauls, open routes and duration limits. The objective is to minimize the total travel distance or time while adhering to all capacity, time window, backhaul, open route, and duration constraints.
+
+[2025-09-15 17:06:12,388][root][INFO] - Function name: heuristics
+[2025-09-15 17:06:12,388][root][INFO] - Evaluating seed function...
+[2025-09-15 17:06:12,389][root][INFO] - Seed function code: 
+import torch
+def heuristics_v2(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    return current_distance_matrix
+[2025-09-15 17:06:12,389][root][INFO] - Iteration 0: Running Code 0
+[2025-09-15 17:06:16,463][root][INFO] - Iteration 0: Code Run 0 successful!
+[2025-09-15 17:06:30,447][root][INFO] - Iteration 0, response_id 0: Objective value: 10.627174377441406
+[2025-09-15 17:06:30,448][root][INFO] - Iteration 0: Elitist: 10.627174377441406
+[2025-09-15 17:06:30,448][root][INFO] - Iteration 0 finished...
+[2025-09-15 17:06:30,449][root][INFO] - Best obj: 10.627174377441406, Best Code Path: problem_iter0_code0.py
+[2025-09-15 17:06:30,449][root][INFO] - Function Evals: 1
+[2025-09-15 17:06:30,449][root][INFO] - Initial Population Prompt: 
+System Prompt: 
+You are an expert in the domain of optimization heuristics. Your task is to design heuristics that can effectively solve optimization problems.
+Your response outputs Python code and nothing else. Format your code as a Python code string: "```python ... ```".
+
+User Prompt: 
+Write a heuristics function for I need assistance in designing a new heuristic to improve the solution of the Unified Vehicle Routing Problem (Unified VRP) by incorporating insights from prior heuristics. The Unified VRP requires finding a set of optimal routes for a fleet of vehicles to serve all given customers, potentially without returning to the depot (open routes). This problem incorporates multiple constraints: firstly, capacity limits where each customer has a demand (including backhauls for pickups and deliveries), and the total cannot exceed vehicle capacity; secondly, time windows where each customer must be visited within a specific interval defined by an earliest and latest possible service time; and thirdly, duration limits ensuring the total route length or time does not exceed preset thresholds. The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated, Time Windows, Backhauls, open routes and duration limits. The objective is to minimize the total travel distance or time while adhering to all capacity, time window, backhaul, open route, and duration constraints.
+
+The heuristics function computes heuristic indicators to guide edge selection in a Vehicle Routing Problem with Capacitated, Time Windows, Backhauls, open routes and duration limits.
+
+
+The inputs are:
+
+current_distance_matrix: Tensor (pomo_size, N+1), the distance matrix from the current node to all other nodes.
+
+delivery_node_demands: Tensor (N+1) – Delivery demand at each node; used to assess whether the vehicle has sufficient remaining load to deliver.
+
+current_load: Tensor (pomo_size) – Remaining capacity of the vehicle at each trajectory. This is used to determine whether visiting a node is feasible under the current load constraints.
+
+delivery_node_demands_open: Tensor (N+1) – Delivery demand at each node; used to assess whether the vehicle has sufficient remaining load to deliver.
+
+current_load_open: Tensor (pomo_size) – Remaining capacity of the vehicle at each trajectory. This is used to determine whether visiting a node is feasible under the current load constraints.
+
+time_windows: Tensor (N+1, 2) – Earliest and latest allowed service times at each node. Used to evaluate time window feasibility and waiting time computation.
+
+arrival_times: Tensor (pomo_size, N+1) – Estimated arrival times at the next node for each trajectory from the current node position.
+
+pickup_node_demands: Tensor (N+1) – Pickup demand at each node, used to evaluate if the vehicle has sufficient capacity to collect.
+
+current_length: Tensor (pomo_size) –Remaining route duration (length) budget of the vehicle at each trajectory. This is used to determine whether visiting a node is feasible under the current length constraints, ensuring the total route length does not exceed preset thresholds.
+
+Output:
+
+The function returns a heuristic score matrix of shape (pomo_size, N+1), assigning positive scores to promising edges and negative scores to undesirable edges.
+
+Implementation Requirements:
+Fully vectorized implementation for optimized GPU execution.
+Efficient computation avoiding explicit loops or slow operations.
+Designed specifically for rapid evaluation in batched GPU-based VRP solving under the POMO framework.
+Introduce enhanced randomness to avoid convergence to local optima.
+
+import torch
+def heuristics_v1(current_distance_matrix: torch.Tensor, delivery_node_demands: torch.Tensor, current_load: torch.Tensor, delivery_node_demands_open: torch.Tensor, current_load_open: torch.Tensor, time_windows: torch.Tensor, arrival_times: torch.Tensor, pickup_node_demands: torch.Tensor, current_length: torch.Tensor) -> torch.Tensor:
+
+    return current_distance_matrix
+
+
+Refer to the format of a trivial design above. Be very creative and give `heuristics_v2`. Output code only and enclose your code with Python code block: ```python ... ```.
+
+
+[2025-09-15 17:06:39,415][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:06:43,451][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:06:43,454][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:06:45,975][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:06:45,978][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:06:51,045][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:06:51,047][root][INFO] - Iteration 3 code code code...
+[2025-09-15 17:06:54,244][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:06:54,246][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:06:56,984][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:06:56,987][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:06:59,564][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:06:59,567][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:07:01,398][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:07:01,400][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:07:01,419][root][INFO] - Iteration 1: Running Code 0
+[2025-09-15 17:07:05,283][root][INFO] - Iteration 1: Code Run 0 successful!
+[2025-09-15 17:07:05,283][root][INFO] - Iteration 1: Running Code 1
+[2025-09-15 17:07:08,807][root][INFO] - Iteration 1: Code Run 1 successful!
+[2025-09-15 17:07:08,807][root][INFO] - Iteration 1: Running Code 2
+[2025-09-15 17:07:12,330][root][INFO] - Iteration 1: Code Run 2 successful!
+[2025-09-15 17:07:12,330][root][INFO] - Iteration 1: Running Code 3
+[2025-09-15 17:07:16,721][root][INFO] - Iteration 1: Code Run 3 successful!
+[2025-09-15 17:07:16,721][root][INFO] - Iteration 1: Running Code 4
+[2025-09-15 17:07:21,190][root][INFO] - Iteration 1: Code Run 4 successful!
+[2025-09-15 17:07:21,190][root][INFO] - Iteration 1: Running Code 5
+[2025-09-15 17:07:24,854][root][INFO] - Iteration 1: Code Run 5 successful!
+[2025-09-15 17:07:24,855][root][INFO] - Iteration 1: Running Code 6
+[2025-09-15 17:07:28,334][root][INFO] - Iteration 1: Code Run 6 successful!
+[2025-09-15 17:07:28,334][root][INFO] - Iteration 1: Running Code 7
+[2025-09-15 17:07:31,944][root][INFO] - Iteration 1: Code Run 7 successful!
+[2025-09-15 17:07:31,944][root][INFO] - Iteration 1: Running Code 8
+[2025-09-15 17:07:35,368][root][INFO] - Iteration 1: Code Run 8 successful!
+[2025-09-15 17:07:35,368][root][INFO] - Iteration 1: Running Code 9
+[2025-09-15 17:07:38,910][root][INFO] - Iteration 1: Code Run 9 successful!
+[2025-09-15 17:08:04,876][root][INFO] - Iteration 1, response_id 0: Objective value: 10.627174377441406
+[2025-09-15 17:08:04,876][root][INFO] - Iteration 1, response_id 1: Objective value: inf
+[2025-09-15 17:08:04,876][root][INFO] - Iteration 1, response_id 2: Objective value: inf
+[2025-09-15 17:08:04,876][root][INFO] - Iteration 1, response_id 3: Objective value: inf
+[2025-09-15 17:08:04,876][root][INFO] - Iteration 1, response_id 4: Objective value: inf
+[2025-09-15 17:08:04,876][root][INFO] - Iteration 1, response_id 5: Objective value: inf
+[2025-09-15 17:08:04,876][root][INFO] - Iteration 1, response_id 6: Objective value: 10.619721412658691
+[2025-09-15 17:08:04,877][root][INFO] - Iteration 1, response_id 7: Objective value: inf
+[2025-09-15 17:08:04,877][root][INFO] - Iteration 1, response_id 8: Objective value: inf
+[2025-09-15 17:08:04,877][root][INFO] - Iteration 1, response_id 9: Objective value: 13.037646293640137
+[2025-09-15 17:08:04,877][root][INFO] - Iteration 1: Elitist: 10.619721412658691
+[2025-09-15 17:08:04,877][root][INFO] - Iteration 1 finished...
+[2025-09-15 17:08:04,877][root][INFO] - Best obj: 10.619721412658691, Best Code Path: problem_iter1_code6.py
+[2025-09-15 17:08:04,877][root][INFO] - Function Evals: 11
+[2025-09-15 17:08:09,768][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:11,065][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:11,548][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:11,593][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:11,615][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:11,619][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:11,672][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:11,949][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:12,137][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:12,296][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:12,453][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:14,605][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:14,814][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:15,133][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:15,549][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:15,812][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:16,044][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:16,046][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:16,715][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:18,022][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:19,672][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:23,156][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:23,159][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:08:26,467][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:26,470][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:08:29,117][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:29,120][root][INFO] - Iteration 3 code code code...
+[2025-09-15 17:08:32,381][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:32,384][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:08:39,769][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:39,772][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:08:41,804][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:41,807][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:08:43,765][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:43,767][root][INFO] - Iteration 3 code code code...
+[2025-09-15 17:08:46,112][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:46,115][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:08:49,356][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+[2025-09-15 17:08:49,357][openai._base_client][INFO] - Retrying request to /chat/completions in 0.432671 seconds
+[2025-09-15 17:08:49,988][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+[2025-09-15 17:08:49,988][openai._base_client][INFO] - Retrying request to /chat/completions in 0.887276 seconds
+[2025-09-15 17:08:51,082][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+[2025-09-15 17:08:51,083][utils.llm_client.base][ERROR] - no healthy upstream
+Traceback (most recent call last):
+  File "/root/autodl-tmp/yao/Hercules/utils/llm_client/base.py", line 31, in chat_completion
+    response_cur = self._chat_completion_api(messages, temperature, n)
+  File "/root/autodl-tmp/yao/Hercules/utils/llm_client/openai.py", line 33, in _chat_completion_api
+    response = self.client.chat.completions.create(
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/openai/_utils/_utils.py", line 286, in wrapper
+    return func(*args, **kwargs)
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/openai/resources/chat/completions/completions.py", line 1147, in create
+    return self._post(
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/openai/_base_client.py", line 1259, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "/root/autodl-tmp/yao/rf_env/lib/python3.10/site-packages/openai/_base_client.py", line 1047, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.InternalServerError: no healthy upstream
+[2025-09-15 17:08:51,087][utils.llm_client.base][INFO] - Attempt 1 failed with error: no healthy upstream
+[2025-09-15 17:08:55,387][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:55,389][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:08:57,978][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:08:57,980][root][INFO] - Iteration 3 code code code...
+[2025-09-15 17:09:02,431][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:02,434][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:09:07,368][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:07,371][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:09:11,700][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:11,702][root][INFO] - Iteration 3 code code code...
+[2025-09-15 17:09:13,558][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:13,560][root][INFO] - Iteration 4 code code code...
+[2025-09-15 17:09:17,244][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:17,246][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:09:21,060][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:21,062][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:09:24,427][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:24,430][root][INFO] - Iteration 3 code code code...
+[2025-09-15 17:09:29,235][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:29,238][root][INFO] - Iteration 4 code code code...
+[2025-09-15 17:09:34,071][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:34,074][root][INFO] - Iteration 5 code code code...
+[2025-09-15 17:09:37,124][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:37,127][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:09:40,381][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:09:40,384][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:09:40,392][root][INFO] - Iteration 2: Running Code 0
+[2025-09-15 17:09:44,614][root][INFO] - Iteration 2: Code Run 0 successful!
+[2025-09-15 17:09:44,615][root][INFO] - Iteration 2: Running Code 1
+[2025-09-15 17:09:48,921][root][INFO] - Iteration 2: Code Run 1 successful!
+[2025-09-15 17:09:48,921][root][INFO] - Iteration 2: Running Code 2
+[2025-09-15 17:09:52,456][root][INFO] - Iteration 2: Code Run 2 successful!
+[2025-09-15 17:09:52,456][root][INFO] - Iteration 2: Running Code 3
+[2025-09-15 17:09:57,172][root][INFO] - Iteration 2: Code Run 3 successful!
+[2025-09-15 17:09:57,173][root][INFO] - Iteration 2: Running Code 4
+[2025-09-15 17:10:01,472][root][INFO] - Iteration 2: Code Run 4 successful!
+[2025-09-15 17:10:01,472][root][INFO] - Iteration 2: Running Code 5
+[2025-09-15 17:10:05,941][root][INFO] - Iteration 2: Code Run 5 successful!
+[2025-09-15 17:10:05,941][root][INFO] - Iteration 2: Running Code 6
+[2025-09-15 17:10:10,645][root][INFO] - Iteration 2: Code Run 6 successful!
+[2025-09-15 17:10:10,646][root][INFO] - Iteration 2: Running Code 7
+[2025-09-15 17:10:15,097][root][INFO] - Iteration 2: Code Run 7 successful!
+[2025-09-15 17:10:15,097][root][INFO] - Iteration 2: Running Code 8
+[2025-09-15 17:10:19,580][root][INFO] - Iteration 2: Code Run 8 successful!
+[2025-09-15 17:10:19,580][root][INFO] - Iteration 2: Running Code 9
+[2025-09-15 17:10:24,103][root][INFO] - Iteration 2: Code Run 9 successful!
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 0: Objective value: 10.612238883972168
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 1: Objective value: 15.325491905212402
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 2: Objective value: 23.876758575439453
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 3: Objective value: 10.61026382446289
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 4: Objective value: 10.61068058013916
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 5: Objective value: 22.599454879760742
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 6: Objective value: 10.620074272155762
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 7: Objective value: 10.612821578979492
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 8: Objective value: 17.757051467895508
+[2025-09-15 17:13:00,204][root][INFO] - Iteration 2, response_id 9: Objective value: 10.602500915527344
+[2025-09-15 17:13:00,205][root][INFO] - Iteration 2: Elitist: 10.602500915527344
+[2025-09-15 17:13:00,205][root][INFO] - Iteration 2 finished...
+[2025-09-15 17:13:00,205][root][INFO] - Best obj: 10.602500915527344, Best Code Path: problem_iter2_code9.py
+[2025-09-15 17:13:00,205][root][INFO] - Function Evals: 21
+[2025-09-15 17:13:02,677][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:13:06,600][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:13:06,650][root][INFO] - Iteration 3: Running Code 0
+[2025-09-15 17:13:10,734][root][INFO] - Iteration 3: Code Run 0 successful!
+[2025-09-15 17:13:10,735][root][INFO] - Iteration 3: Running Code 1
+[2025-09-15 17:13:14,402][root][INFO] - Iteration 3: Code Run 1 successful!
+[2025-09-15 17:13:14,402][root][INFO] - Iteration 3: Running Code 2
+[2025-09-15 17:13:19,015][root][INFO] - Iteration 3: Code Run 2 successful!
+[2025-09-15 17:13:19,015][root][INFO] - Iteration 3: Running Code 3
+[2025-09-15 17:13:23,448][root][INFO] - Iteration 3: Code Run 3 successful!
+[2025-09-15 17:13:23,448][root][INFO] - Iteration 3: Running Code 4
+[2025-09-15 17:13:27,026][root][INFO] - Iteration 3: Code Run 4 successful!
+[2025-09-15 17:14:20,933][root][INFO] - Iteration 3, response_id 0: Objective value: 10.612238883972168
+[2025-09-15 17:14:20,934][root][INFO] - Iteration 3, response_id 1: Objective value: 15.325491905212402
+[2025-09-15 17:14:20,934][root][INFO] - Iteration 3, response_id 2: Objective value: 23.876758575439453
+[2025-09-15 17:14:20,934][root][INFO] - Iteration 3, response_id 3: Objective value: 10.61026382446289
+[2025-09-15 17:14:20,934][root][INFO] - Iteration 3, response_id 4: Objective value: 10.61068058013916
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 5: Objective value: 22.599454879760742
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 6: Objective value: 10.620074272155762
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 7: Objective value: 10.612821578979492
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 8: Objective value: 17.757051467895508
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 9: Objective value: 10.602500915527344
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 10: Objective value: 10.628371238708496
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 11: Objective value: 10.588470458984375
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 12: Objective value: 10.632089614868164
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 13: Objective value: 10.588184356689453
+[2025-09-15 17:14:20,935][root][INFO] - Iteration 3, response_id 14: Objective value: 10.588184356689453
+[2025-09-15 17:14:20,936][root][INFO] - Iteration 3: Elitist: 10.588184356689453
+[2025-09-15 17:14:20,936][root][INFO] - Iteration 3 finished...
+[2025-09-15 17:14:20,936][root][INFO] - Best obj: 10.588184356689453, Best Code Path: problem_iter3_code3.py
+[2025-09-15 17:14:20,936][root][INFO] - Function Evals: 26
+[2025-09-15 17:14:23,236][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:24,373][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:24,700][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:25,024][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:25,084][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:25,107][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:25,246][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:25,249][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:25,253][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:25,414][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:26,672][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:28,425][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:29,013][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:29,486][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:29,692][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:30,370][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:30,373][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:30,384][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:30,386][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:30,393][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:30,533][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:34,346][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:34,349][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:14:38,293][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:38,297][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:14:41,511][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:14:41,514][root][INFO] - Iteration 3 code code code...
+[2025-09-15 17:14:41,543][root][INFO] - Iteration 4: Running Code 0
+[2025-09-15 17:14:46,105][root][INFO] - Iteration 4: Code Run 0 successful!
+[2025-09-15 17:14:46,105][root][INFO] - Iteration 4: Running Code 1
+[2025-09-15 17:14:49,642][root][INFO] - Iteration 4: Code Run 1 successful!
+[2025-09-15 17:14:49,644][root][INFO] - Iteration 4: Running Code 2
+[2025-09-15 17:14:53,197][root][INFO] - Iteration 4: Code Run 2 successful!
+[2025-09-15 17:14:53,197][root][INFO] - Iteration 4: Running Code 3
+[2025-09-15 17:14:56,785][root][INFO] - Iteration 4: Code Run 3 successful!
+[2025-09-15 17:14:56,785][root][INFO] - Iteration 4: Running Code 4
+[2025-09-15 17:15:00,421][root][INFO] - Iteration 4: Code Run 4 successful!
+[2025-09-15 17:15:00,421][root][INFO] - Iteration 4: Running Code 5
+[2025-09-15 17:15:04,185][root][INFO] - Iteration 4: Code Run 5 successful!
+[2025-09-15 17:15:04,187][root][INFO] - Iteration 4: Running Code 6
+[2025-09-15 17:15:08,735][root][INFO] - Iteration 4: Code Run 6 successful!
+[2025-09-15 17:15:08,736][root][INFO] - Iteration 4: Running Code 7
+[2025-09-15 17:15:13,368][root][INFO] - Iteration 4: Code Run 7 successful!
+[2025-09-15 17:15:13,368][root][INFO] - Iteration 4: Running Code 8
+[2025-09-15 17:15:16,972][root][INFO] - Iteration 4: Code Run 8 successful!
+[2025-09-15 17:15:16,972][root][INFO] - Iteration 4: Running Code 9
+[2025-09-15 17:15:20,783][root][INFO] - Iteration 4: Code Run 9 successful!
+[2025-09-15 17:16:46,991][root][INFO] - Iteration 4, response_id 0: Objective value: 22.599454879760742
+[2025-09-15 17:16:46,991][root][INFO] - Iteration 4, response_id 1: Objective value: 10.619102478027344
+[2025-09-15 17:16:46,991][root][INFO] - Iteration 4, response_id 2: Objective value: 10.61850357055664
+[2025-09-15 17:16:46,992][root][INFO] - Iteration 4, response_id 3: Objective value: 10.604447364807129
+[2025-09-15 17:16:46,992][root][INFO] - Iteration 4, response_id 4: Objective value: 12.295660018920898
+[2025-09-15 17:16:46,992][root][INFO] - Iteration 4, response_id 5: Objective value: 10.600290298461914
+[2025-09-15 17:16:46,992][root][INFO] - Iteration 4, response_id 6: Objective value: 10.589715003967285
+[2025-09-15 17:16:46,992][root][INFO] - Iteration 4, response_id 7: Objective value: 10.606949806213379
+[2025-09-15 17:16:46,992][root][INFO] - Iteration 4, response_id 8: Objective value: 10.597463607788086
+[2025-09-15 17:16:46,992][root][INFO] - Iteration 4, response_id 9: Objective value: 10.608259201049805
+[2025-09-15 17:16:46,992][root][INFO] - Iteration 4 finished...
+[2025-09-15 17:16:46,992][root][INFO] - Best obj: 10.588184356689453, Best Code Path: problem_iter3_code3.py
+[2025-09-15 17:16:46,992][root][INFO] - Function Evals: 36
+[2025-09-15 17:16:50,129][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:16:56,451][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:16:56,512][root][INFO] - Iteration 5: Running Code 0
+[2025-09-15 17:17:00,572][root][INFO] - Iteration 5: Code Run 0 successful!
+[2025-09-15 17:17:00,572][root][INFO] - Iteration 5: Running Code 1
+[2025-09-15 17:17:04,131][root][INFO] - Iteration 5: Code Run 1 successful!
+[2025-09-15 17:17:04,131][root][INFO] - Iteration 5: Running Code 2
+[2025-09-15 17:17:07,745][root][INFO] - Iteration 5: Code Run 2 successful!
+[2025-09-15 17:17:07,745][root][INFO] - Iteration 5: Running Code 3
+[2025-09-15 17:17:11,354][root][INFO] - Iteration 5: Code Run 3 successful!
+[2025-09-15 17:17:11,355][root][INFO] - Iteration 5: Running Code 4
+[2025-09-15 17:17:14,995][root][INFO] - Iteration 5: Code Run 4 successful!
+[2025-09-15 17:17:22,397][root][INFO] - Iteration 5, response_id 0: Objective value: 22.599454879760742
+[2025-09-15 17:17:22,397][root][INFO] - Iteration 5, response_id 1: Objective value: 10.619102478027344
+[2025-09-15 17:17:22,397][root][INFO] - Iteration 5, response_id 2: Objective value: 10.61850357055664
+[2025-09-15 17:17:22,397][root][INFO] - Iteration 5, response_id 3: Objective value: 10.604447364807129
+[2025-09-15 17:17:22,397][root][INFO] - Iteration 5, response_id 4: Objective value: 12.295660018920898
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 5: Objective value: 10.600290298461914
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 6: Objective value: 10.589715003967285
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 7: Objective value: 10.606949806213379
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 8: Objective value: 10.597463607788086
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 9: Objective value: 10.608259201049805
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 10: Objective value: inf
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 11: Objective value: inf
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 12: Objective value: inf
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 13: Objective value: inf
+[2025-09-15 17:17:22,398][root][INFO] - Iteration 5, response_id 14: Objective value: inf
+[2025-09-15 17:17:22,399][root][INFO] - Iteration 5 finished...
+[2025-09-15 17:17:22,399][root][INFO] - Best obj: 10.588184356689453, Best Code Path: problem_iter3_code3.py
+[2025-09-15 17:17:22,399][root][INFO] - Function Evals: 41
+[2025-09-15 17:17:26,398][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:27,392][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:27,948][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:28,329][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:28,334][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:28,419][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:28,459][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:28,465][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:28,549][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:28,879][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:33,131][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:35,250][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:35,610][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:36,316][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:36,513][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:36,574][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:36,602][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:37,043][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:37,469][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:37,881][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:38,463][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:17:38,560][root][INFO] - Iteration 6: Running Code 0
+[2025-09-15 17:17:42,497][root][INFO] - Iteration 6: Code Run 0 successful!
+[2025-09-15 17:17:42,498][root][INFO] - Iteration 6: Running Code 1
+[2025-09-15 17:17:45,986][root][INFO] - Iteration 6: Code Run 1 successful!
+[2025-09-15 17:17:45,986][root][INFO] - Iteration 6: Running Code 2
+[2025-09-15 17:17:50,506][root][INFO] - Iteration 6: Code Run 2 successful!
+[2025-09-15 17:17:50,506][root][INFO] - Iteration 6: Running Code 3
+[2025-09-15 17:17:54,592][root][INFO] - Iteration 6: Code Run 3 successful!
+[2025-09-15 17:17:54,592][root][INFO] - Iteration 6: Running Code 4
+[2025-09-15 17:17:59,081][root][INFO] - Iteration 6: Code Run 4 successful!
+[2025-09-15 17:17:59,082][root][INFO] - Iteration 6: Running Code 5
+[2025-09-15 17:18:03,607][root][INFO] - Iteration 6: Code Run 5 successful!
+[2025-09-15 17:18:03,607][root][INFO] - Iteration 6: Running Code 6
+[2025-09-15 17:18:08,192][root][INFO] - Iteration 6: Code Run 6 successful!
+[2025-09-15 17:18:08,192][root][INFO] - Iteration 6: Running Code 7
+[2025-09-15 17:18:12,720][root][INFO] - Iteration 6: Code Run 7 successful!
+[2025-09-15 17:18:12,720][root][INFO] - Iteration 6: Running Code 8
+[2025-09-15 17:18:17,481][root][INFO] - Iteration 6: Code Run 8 successful!
+[2025-09-15 17:18:17,481][root][INFO] - Iteration 6: Running Code 9
+[2025-09-15 17:18:22,157][root][INFO] - Iteration 6: Code Run 9 successful!
+[2025-09-15 17:20:12,432][root][INFO] - Iteration 6, response_id 0: Objective value: 12.027800559997559
+[2025-09-15 17:20:12,433][root][INFO] - Iteration 6, response_id 1: Objective value: 11.113489151000977
+[2025-09-15 17:20:12,433][root][INFO] - Iteration 6, response_id 2: Objective value: 10.58149528503418
+[2025-09-15 17:20:12,433][root][INFO] - Iteration 6, response_id 3: Objective value: 10.581929206848145
+[2025-09-15 17:20:12,433][root][INFO] - Iteration 6, response_id 4: Objective value: 10.597463607788086
+[2025-09-15 17:20:12,433][root][INFO] - Iteration 6, response_id 5: Objective value: 10.630688667297363
+[2025-09-15 17:20:12,433][root][INFO] - Iteration 6, response_id 6: Objective value: 10.692011833190918
+[2025-09-15 17:20:12,433][root][INFO] - Iteration 6, response_id 7: Objective value: 10.590603828430176
+[2025-09-15 17:20:12,433][root][INFO] - Iteration 6, response_id 8: Objective value: 10.622414588928223
+[2025-09-15 17:20:12,433][root][INFO] - Iteration 6, response_id 9: Objective value: 10.584321022033691
+[2025-09-15 17:20:12,434][root][INFO] - Iteration 6: Elitist: 10.58149528503418
+[2025-09-15 17:20:12,434][root][INFO] - Iteration 6 finished...
+[2025-09-15 17:20:12,434][root][INFO] - Best obj: 10.58149528503418, Best Code Path: problem_iter6_code2.py
+[2025-09-15 17:20:12,434][root][INFO] - Function Evals: 51
+[2025-09-15 17:20:15,340][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:20:22,095][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:20:27,545][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:20:27,548][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:20:30,444][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:20:30,447][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:20:32,780][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:20:32,783][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:20:43,534][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:20:43,537][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:20:49,135][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:20:49,139][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:20:49,150][root][INFO] - Iteration 7: Running Code 0
+[2025-09-15 17:20:53,296][root][INFO] - Iteration 7: Code Run 0 successful!
+[2025-09-15 17:20:53,297][root][INFO] - Iteration 7: Running Code 1
+[2025-09-15 17:20:56,737][root][INFO] - Iteration 7: Code Run 1 successful!
+[2025-09-15 17:20:56,737][root][INFO] - Iteration 7: Running Code 2
+[2025-09-15 17:21:00,800][root][INFO] - Iteration 7: Code Run 2 successful!
+[2025-09-15 17:21:00,800][root][INFO] - Iteration 7: Running Code 3
+[2025-09-15 17:21:04,433][root][INFO] - Iteration 7: Code Run 3 successful!
+[2025-09-15 17:21:04,433][root][INFO] - Iteration 7: Running Code 4
+[2025-09-15 17:21:08,000][root][INFO] - Iteration 7: Code Run 4 successful!
+[2025-09-15 17:21:43,830][root][INFO] - Iteration 7, response_id 0: Objective value: 12.027800559997559
+[2025-09-15 17:21:43,830][root][INFO] - Iteration 7, response_id 1: Objective value: 11.113489151000977
+[2025-09-15 17:21:43,830][root][INFO] - Iteration 7, response_id 2: Objective value: 10.58149528503418
+[2025-09-15 17:21:43,830][root][INFO] - Iteration 7, response_id 3: Objective value: 10.581929206848145
+[2025-09-15 17:21:43,830][root][INFO] - Iteration 7, response_id 4: Objective value: 10.597463607788086
+[2025-09-15 17:21:43,830][root][INFO] - Iteration 7, response_id 5: Objective value: 10.630688667297363
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7, response_id 6: Objective value: 10.692011833190918
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7, response_id 7: Objective value: 10.590603828430176
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7, response_id 8: Objective value: 10.622414588928223
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7, response_id 9: Objective value: 10.584321022033691
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7, response_id 10: Objective value: 10.588184356689453
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7, response_id 11: Objective value: inf
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7, response_id 12: Objective value: 10.579305648803711
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7, response_id 13: Objective value: inf
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7, response_id 14: Objective value: inf
+[2025-09-15 17:21:43,831][root][INFO] - Iteration 7: Elitist: 10.579305648803711
+[2025-09-15 17:21:43,832][root][INFO] - Iteration 7 finished...
+[2025-09-15 17:21:43,832][root][INFO] - Best obj: 10.579305648803711, Best Code Path: problem_iter7_code2.py
+[2025-09-15 17:21:43,832][root][INFO] - Function Evals: 56
+[2025-09-15 17:21:48,283][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:49,692][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:50,359][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:50,795][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:50,835][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:50,925][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:50,963][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:50,969][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:50,987][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:51,359][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:51,408][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:55,335][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:55,484][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:56,151][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:56,215][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:56,266][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:56,514][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:56,786][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:57,237][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:57,432][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:21:57,646][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:22:03,388][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:22:03,391][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:22:03,448][root][INFO] - Iteration 8: Running Code 0
+[2025-09-15 17:22:07,306][root][INFO] - Iteration 8: Code Run 0 successful!
+[2025-09-15 17:22:07,307][root][INFO] - Iteration 8: Running Code 1
+[2025-09-15 17:22:10,866][root][INFO] - Iteration 8: Code Run 1 successful!
+[2025-09-15 17:22:10,866][root][INFO] - Iteration 8: Running Code 2
+[2025-09-15 17:22:15,378][root][INFO] - Iteration 8: Code Run 2 successful!
+[2025-09-15 17:22:15,378][root][INFO] - Iteration 8: Running Code 3
+[2025-09-15 17:22:19,061][root][INFO] - Iteration 8: Code Run 3 successful!
+[2025-09-15 17:22:19,061][root][INFO] - Iteration 8: Running Code 4
+[2025-09-15 17:22:23,591][root][INFO] - Iteration 8: Code Run 4 successful!
+[2025-09-15 17:22:23,592][root][INFO] - Iteration 8: Running Code 5
+[2025-09-15 17:22:28,409][root][INFO] - Iteration 8: Code Run 5 successful!
+[2025-09-15 17:22:28,409][root][INFO] - Iteration 8: Running Code 6
+[2025-09-15 17:22:32,007][root][INFO] - Iteration 8: Code Run 6 successful!
+[2025-09-15 17:22:32,007][root][INFO] - Iteration 8: Running Code 7
+[2025-09-15 17:22:35,359][root][INFO] - Iteration 8: Code Run 7 successful!
+[2025-09-15 17:22:35,359][root][INFO] - Iteration 8: Running Code 8
+[2025-09-15 17:22:39,797][root][INFO] - Iteration 8: Code Run 8 successful!
+[2025-09-15 17:22:39,797][root][INFO] - Iteration 8: Running Code 9
+[2025-09-15 17:22:44,166][root][INFO] - Iteration 8: Code Run 9 successful!
+[2025-09-15 17:24:35,206][root][INFO] - Iteration 8, response_id 0: Objective value: inf
+[2025-09-15 17:24:35,207][root][INFO] - Iteration 8, response_id 1: Objective value: 10.687846183776855
+[2025-09-15 17:24:35,207][root][INFO] - Iteration 8, response_id 2: Objective value: inf
+[2025-09-15 17:24:35,207][root][INFO] - Iteration 8, response_id 3: Objective value: 10.61871337890625
+[2025-09-15 17:24:35,207][root][INFO] - Iteration 8, response_id 4: Objective value: inf
+[2025-09-15 17:24:35,207][root][INFO] - Iteration 8, response_id 5: Objective value: inf
+[2025-09-15 17:24:35,207][root][INFO] - Iteration 8, response_id 6: Objective value: inf
+[2025-09-15 17:24:35,207][root][INFO] - Iteration 8, response_id 7: Objective value: inf
+[2025-09-15 17:24:35,207][root][INFO] - Iteration 8, response_id 8: Objective value: inf
+[2025-09-15 17:24:35,207][root][INFO] - Iteration 8, response_id 9: Objective value: 10.597892761230469
+[2025-09-15 17:24:35,208][root][INFO] - Iteration 8 finished...
+[2025-09-15 17:24:35,208][root][INFO] - Best obj: 10.579305648803711, Best Code Path: problem_iter7_code2.py
+[2025-09-15 17:24:35,208][root][INFO] - Function Evals: 66
+[2025-09-15 17:24:39,074][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:24:45,238][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:24:50,485][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:24:50,488][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:24:55,858][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:24:55,861][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:25:00,888][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:00,891][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:25:00,904][root][INFO] - Iteration 9: Running Code 0
+[2025-09-15 17:25:05,018][root][INFO] - Iteration 9: Code Run 0 successful!
+[2025-09-15 17:25:05,019][root][INFO] - Iteration 9: Running Code 1
+[2025-09-15 17:25:09,724][root][INFO] - Iteration 9: Code Run 1 successful!
+[2025-09-15 17:25:09,724][root][INFO] - Iteration 9: Running Code 2
+[2025-09-15 17:25:13,338][root][INFO] - Iteration 9: Code Run 2 successful!
+[2025-09-15 17:25:13,338][root][INFO] - Iteration 9: Running Code 3
+[2025-09-15 17:25:16,947][root][INFO] - Iteration 9: Code Run 3 successful!
+[2025-09-15 17:25:16,947][root][INFO] - Iteration 9: Running Code 4
+[2025-09-15 17:25:20,498][root][INFO] - Iteration 9: Code Run 4 successful!
+[2025-09-15 17:25:27,901][root][INFO] - Iteration 9, response_id 0: Objective value: inf
+[2025-09-15 17:25:27,901][root][INFO] - Iteration 9, response_id 1: Objective value: 10.687846183776855
+[2025-09-15 17:25:27,901][root][INFO] - Iteration 9, response_id 2: Objective value: inf
+[2025-09-15 17:25:27,901][root][INFO] - Iteration 9, response_id 3: Objective value: 10.61871337890625
+[2025-09-15 17:25:27,901][root][INFO] - Iteration 9, response_id 4: Objective value: inf
+[2025-09-15 17:25:27,901][root][INFO] - Iteration 9, response_id 5: Objective value: inf
+[2025-09-15 17:25:27,901][root][INFO] - Iteration 9, response_id 6: Objective value: inf
+[2025-09-15 17:25:27,901][root][INFO] - Iteration 9, response_id 7: Objective value: inf
+[2025-09-15 17:25:27,902][root][INFO] - Iteration 9, response_id 8: Objective value: inf
+[2025-09-15 17:25:27,902][root][INFO] - Iteration 9, response_id 9: Objective value: 10.597892761230469
+[2025-09-15 17:25:27,902][root][INFO] - Iteration 9, response_id 10: Objective value: inf
+[2025-09-15 17:25:27,902][root][INFO] - Iteration 9, response_id 11: Objective value: inf
+[2025-09-15 17:25:27,902][root][INFO] - Iteration 9, response_id 12: Objective value: inf
+[2025-09-15 17:25:27,902][root][INFO] - Iteration 9, response_id 13: Objective value: inf
+[2025-09-15 17:25:27,902][root][INFO] - Iteration 9, response_id 14: Objective value: inf
+[2025-09-15 17:25:27,902][root][INFO] - Iteration 9 finished...
+[2025-09-15 17:25:27,903][root][INFO] - Best obj: 10.579305648803711, Best Code Path: problem_iter7_code2.py
+[2025-09-15 17:25:27,903][root][INFO] - Function Evals: 71
+[2025-09-15 17:25:29,893][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:30,076][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:30,098][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:30,101][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:30,176][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:30,283][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:30,588][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:30,635][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:30,758][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:31,393][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:35,959][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:36,046][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:36,153][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:36,741][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:36,744][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:37,265][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:37,270][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:37,281][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:39,763][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:40,329][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:46,775][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:46,779][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:25:51,435][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:51,437][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:25:54,071][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:54,074][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:25:59,388][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:25:59,392][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:25:59,418][root][INFO] - Iteration 10: Running Code 0
+[2025-09-15 17:26:03,139][root][INFO] - Iteration 10: Code Run 0 successful!
+[2025-09-15 17:26:03,139][root][INFO] - Iteration 10: Running Code 1
+[2025-09-15 17:26:06,640][root][INFO] - Iteration 10: Code Run 1 successful!
+[2025-09-15 17:26:06,640][root][INFO] - Iteration 10: Running Code 2
+[2025-09-15 17:26:11,224][root][INFO] - Iteration 10: Code Run 2 successful!
+[2025-09-15 17:26:11,224][root][INFO] - Iteration 10: Running Code 3
+[2025-09-15 17:26:14,767][root][INFO] - Iteration 10: Code Run 3 successful!
+[2025-09-15 17:26:14,767][root][INFO] - Iteration 10: Running Code 4
+[2025-09-15 17:26:18,405][root][INFO] - Iteration 10: Code Run 4 successful!
+[2025-09-15 17:26:18,405][root][INFO] - Iteration 10: Running Code 5
+[2025-09-15 17:26:21,991][root][INFO] - Iteration 10: Code Run 5 successful!
+[2025-09-15 17:26:21,991][root][INFO] - Iteration 10: Running Code 6
+[2025-09-15 17:26:25,536][root][INFO] - Iteration 10: Code Run 6 successful!
+[2025-09-15 17:26:25,536][root][INFO] - Iteration 10: Running Code 7
+[2025-09-15 17:26:29,086][root][INFO] - Iteration 10: Code Run 7 successful!
+[2025-09-15 17:26:29,086][root][INFO] - Iteration 10: Running Code 8
+[2025-09-15 17:26:33,248][root][INFO] - Iteration 10: Code Run 8 successful!
+[2025-09-15 17:26:33,248][root][INFO] - Iteration 10: Running Code 9
+[2025-09-15 17:26:36,848][root][INFO] - Iteration 10: Code Run 9 successful!
+[2025-09-15 17:28:21,633][root][INFO] - Iteration 10, response_id 0: Objective value: inf
+[2025-09-15 17:28:21,633][root][INFO] - Iteration 10, response_id 1: Objective value: inf
+[2025-09-15 17:28:21,633][root][INFO] - Iteration 10, response_id 2: Objective value: inf
+[2025-09-15 17:28:21,633][root][INFO] - Iteration 10, response_id 3: Objective value: inf
+[2025-09-15 17:28:21,633][root][INFO] - Iteration 10, response_id 4: Objective value: inf
+[2025-09-15 17:28:21,633][root][INFO] - Iteration 10, response_id 5: Objective value: 10.579305648803711
+[2025-09-15 17:28:21,634][root][INFO] - Iteration 10, response_id 6: Objective value: 10.599605560302734
+[2025-09-15 17:28:21,634][root][INFO] - Iteration 10, response_id 7: Objective value: inf
+[2025-09-15 17:28:21,634][root][INFO] - Iteration 10, response_id 8: Objective value: inf
+[2025-09-15 17:28:21,634][root][INFO] - Iteration 10, response_id 9: Objective value: inf
+[2025-09-15 17:28:21,634][root][INFO] - Iteration 10 finished...
+[2025-09-15 17:28:21,634][root][INFO] - Best obj: 10.579305648803711, Best Code Path: problem_iter7_code2.py
+[2025-09-15 17:28:21,634][root][INFO] - Function Evals: 81
+[2025-09-15 17:28:24,092][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:28:28,220][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:28:31,818][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:28:31,820][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:28:35,604][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:28:35,607][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:28:40,066][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:28:40,068][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:28:44,305][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:28:44,308][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:28:44,323][root][INFO] - Iteration 11: Running Code 0
+[2025-09-15 17:28:48,675][root][INFO] - Iteration 11: Code Run 0 successful!
+[2025-09-15 17:28:48,675][root][INFO] - Iteration 11: Running Code 1
+[2025-09-15 17:28:52,222][root][INFO] - Iteration 11: Code Run 1 successful!
+[2025-09-15 17:28:52,223][root][INFO] - Iteration 11: Running Code 2
+[2025-09-15 17:28:56,787][root][INFO] - Iteration 11: Code Run 2 successful!
+[2025-09-15 17:28:56,787][root][INFO] - Iteration 11: Running Code 3
+[2025-09-15 17:29:01,265][root][INFO] - Iteration 11: Code Run 3 successful!
+[2025-09-15 17:29:01,265][root][INFO] - Iteration 11: Running Code 4
+[2025-09-15 17:29:04,770][root][INFO] - Iteration 11: Code Run 4 successful!
+[2025-09-15 17:30:03,399][root][INFO] - Iteration 11, response_id 0: Objective value: inf
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 1: Objective value: inf
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 2: Objective value: inf
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 3: Objective value: inf
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 4: Objective value: inf
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 5: Objective value: 10.579305648803711
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 6: Objective value: 10.599605560302734
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 7: Objective value: inf
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 8: Objective value: inf
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 9: Objective value: inf
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 10: Objective value: 10.60709285736084
+[2025-09-15 17:30:03,400][root][INFO] - Iteration 11, response_id 11: Objective value: 10.585795402526855
+[2025-09-15 17:30:03,401][root][INFO] - Iteration 11, response_id 12: Objective value: 10.603241920471191
+[2025-09-15 17:30:03,401][root][INFO] - Iteration 11, response_id 13: Objective value: inf
+[2025-09-15 17:30:03,401][root][INFO] - Iteration 11, response_id 14: Objective value: 10.617363929748535
+[2025-09-15 17:30:03,401][root][INFO] - Iteration 11 finished...
+[2025-09-15 17:30:03,401][root][INFO] - Best obj: 10.579305648803711, Best Code Path: problem_iter7_code2.py
+[2025-09-15 17:30:03,401][root][INFO] - Function Evals: 86
+[2025-09-15 17:30:05,082][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:05,510][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:05,516][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:05,520][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:05,577][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:05,939][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:06,107][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:06,193][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:06,357][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:06,450][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:10,546][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:11,572][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:11,800][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:11,964][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:12,056][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:12,569][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:12,644][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:14,510][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:14,513][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:15,933][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:22,961][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:22,965][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:30:28,415][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:28,417][root][INFO] - Iteration 2 code code code...
+[2025-09-15 17:30:32,308][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:32,311][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:30:36,470][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:36,473][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:30:42,293][httpx][INFO] - HTTP Request: POST https://ai.nengyongai.cn/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-09-15 17:30:42,296][root][INFO] - Iteration 1 code code code...
+[2025-09-15 17:30:42,310][root][INFO] - Iteration 12: Running Code 0
+[2025-09-15 17:30:45,696][root][INFO] - Iteration 12: Code Run 0 successful!
+[2025-09-15 17:30:45,696][root][INFO] - Iteration 12: Running Code 1
+[2025-09-15 17:30:50,141][root][INFO] - Iteration 12: Code Run 1 successful!
+[2025-09-15 17:30:50,141][root][INFO] - Iteration 12: Running Code 2
+[2025-09-15 17:30:53,766][root][INFO] - Iteration 12: Code Run 2 successful!
+[2025-09-15 17:30:53,767][root][INFO] - Iteration 12: Running Code 3
+[2025-09-15 17:30:57,430][root][INFO] - Iteration 12: Code Run 3 successful!
+[2025-09-15 17:30:57,430][root][INFO] - Iteration 12: Running Code 4
+[2025-09-15 17:31:01,080][root][INFO] - Iteration 12: Code Run 4 successful!
+[2025-09-15 17:31:01,081][root][INFO] - Iteration 12: Running Code 5
+[2025-09-15 17:31:04,845][root][INFO] - Iteration 12: Code Run 5 successful!
+[2025-09-15 17:31:04,845][root][INFO] - Iteration 12: Running Code 6
+[2025-09-15 17:31:08,598][root][INFO] - Iteration 12: Code Run 6 successful!
+[2025-09-15 17:31:08,598][root][INFO] - Iteration 12: Running Code 7
+[2025-09-15 17:31:12,735][root][INFO] - Iteration 12: Code Run 7 successful!
+[2025-09-15 17:31:12,735][root][INFO] - Iteration 12: Running Code 8
+[2025-09-15 17:31:17,189][root][INFO] - Iteration 12: Code Run 8 successful!
+[2025-09-15 17:31:17,189][root][INFO] - Iteration 12: Running Code 9
+[2025-09-15 17:31:20,910][root][INFO] - Iteration 12: Code Run 9 successful!
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 0: Objective value: inf
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 1: Objective value: inf
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 2: Objective value: inf
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 3: Objective value: inf
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 4: Objective value: inf
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 5: Objective value: inf
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 6: Objective value: inf
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 7: Objective value: inf
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 8: Objective value: inf
+[2025-09-15 17:31:28,802][root][INFO] - Iteration 12, response_id 9: Objective value: inf
